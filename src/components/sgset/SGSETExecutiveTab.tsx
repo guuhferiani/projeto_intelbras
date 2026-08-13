@@ -250,8 +250,8 @@ export const SGSETExecutiveTab: React.FC<SGSETExecutiveTabProps> = ({ students, 
             <Award className="w-5 h-5" />
           </div>
           <div>
-            <div className="text-xs text-gray-400 font-medium">Turma Destaque</div>
-            <div className="font-bold text-white text-sm">
+            <div className="text-xs text-[var(--text-secondary)] font-medium">Turma Destaque</div>
+            <div className="font-bold text-[var(--text-primary)] text-sm">
               {turmaNames[0] || 'AUTIPRET 2602NB'}
             </div>
             <div className="text-[11px] text-emerald-400">100% de engajamento ativo</div>
@@ -263,8 +263,8 @@ export const SGSETExecutiveTab: React.FC<SGSETExecutiveTabProps> = ({ students, 
             <TrendingUp className="w-5 h-5" />
           </div>
           <div>
-            <div className="text-xs text-gray-400 font-medium">Inserção no Mercado</div>
-            <div className="font-bold text-white text-sm">
+            <div className="text-xs text-[var(--text-secondary)] font-medium">Inserção no Mercado</div>
+            <div className="font-bold text-[var(--text-primary)] text-sm">
               Emprego & Autonomia
             </div>
             <div className="text-[11px] text-blue-400">Maioria dos alunos já atua no setor</div>
@@ -276,8 +276,8 @@ export const SGSETExecutiveTab: React.FC<SGSETExecutiveTabProps> = ({ students, 
             <Building className="w-5 h-5" />
           </div>
           <div>
-            <div className="text-xs text-gray-400 font-medium">Capacitação Tecnológica</div>
-            <div className="font-bold text-white text-sm">
+            <div className="text-xs text-[var(--text-secondary)] font-medium">Capacitação Tecnológica</div>
+            <div className="font-bold text-[var(--text-primary)] text-sm">
               Automação & Boas Práticas
             </div>
             <div className="text-[11px] text-purple-400">Formação técnica integrada</div>
@@ -293,10 +293,10 @@ export const SGSETExecutiveTab: React.FC<SGSETExecutiveTabProps> = ({ students, 
         <div className="glass-card p-5">
           <div className="flex items-center justify-between mb-3">
             <div>
-              <h3 className="text-sm font-bold text-white flex items-center gap-2">
+              <h3 className="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2">
                 <span>🎓</span> Situação dos Alunos por Turma e Curso
               </h3>
-              <p className="text-xs text-gray-400">Distribuição entre Ativos, Concluídos e Evasão</p>
+              <p className="text-xs text-[var(--text-secondary)]">Distribuição entre Ativos, Concluídos e Evasão</p>
             </div>
           </div>
           <div className="h-72">
@@ -308,10 +308,10 @@ export const SGSETExecutiveTab: React.FC<SGSETExecutiveTabProps> = ({ students, 
         <div className="glass-card p-5">
           <div className="flex items-center justify-between mb-3">
             <div>
-              <h3 className="text-sm font-bold text-white flex items-center gap-2">
+              <h3 className="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2">
                 <span>💼</span> Perfil Ocupacional & Empregabilidade
               </h3>
-              <p className="text-xs text-gray-400">Situação de trabalho dos participantes no início do curso</p>
+              <p className="text-xs text-[var(--text-secondary)]">Situação de trabalho dos participantes no início do curso</p>
             </div>
           </div>
           <div className="h-72">
@@ -323,10 +323,10 @@ export const SGSETExecutiveTab: React.FC<SGSETExecutiveTabProps> = ({ students, 
         <div className="glass-card p-5">
           <div className="flex items-center justify-between mb-3">
             <div>
-              <h3 className="text-sm font-bold text-white flex items-center gap-2">
+              <h3 className="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2">
                 <span>👥</span> Distribuição por Faixa Etária
               </h3>
-              <p className="text-xs text-gray-400">Concentração de idade calculada pela data de nascimento</p>
+              <p className="text-xs text-[var(--text-secondary)]">Concentração de idade calculada pela data de nascimento</p>
             </div>
           </div>
           <div className="h-72">
@@ -338,10 +338,10 @@ export const SGSETExecutiveTab: React.FC<SGSETExecutiveTabProps> = ({ students, 
         <div className="glass-card p-5">
           <div className="flex items-center justify-between mb-3">
             <div>
-              <h3 className="text-sm font-bold text-white flex items-center gap-2">
+              <h3 className="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2">
                 <span>📚</span> Nível de Escolaridade dos Inscritos
               </h3>
-              <p className="text-xs text-gray-400">Grau de instrução formal informado no SGSET</p>
+              <p className="text-xs text-[var(--text-secondary)]">Grau de instrução formal informado no SGSET</p>
             </div>
           </div>
           <div className="h-72">

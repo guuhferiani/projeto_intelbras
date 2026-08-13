@@ -253,11 +253,11 @@ export function App() {
                   />
                   {filteredStudents.length === 0 ? (
                     <div className="glass-card p-12 flex flex-col items-center justify-center text-center">
-                      <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-4">
+                      <div className="w-16 h-16 bg-[var(--bg-secondary)] rounded-full flex items-center justify-center mb-4">
                         <span className="text-3xl">🔍</span>
                       </div>
-                      <h3 className="text-lg font-bold text-white mb-2">Nenhum aluno encontrado</h3>
-                      <p className="text-sm text-gray-400 mb-6">Tente ajustar os filtros para encontrar os resultados desejados.</p>
+                      <h3 className="text-lg font-bold text-[var(--text-primary)] mb-2">Nenhum aluno encontrado</h3>
+                      <p className="text-sm text-[var(--text-secondary)] mb-6">Tente ajustar os filtros para encontrar os resultados desejados.</p>
                       <button onClick={handleResetFilters} className="px-4 py-2 bg-[#00A335] text-white font-semibold text-sm rounded-lg hover:bg-[#00882B] transition-colors cursor-pointer">
                         Limpar Filtros
                       </button>
@@ -280,11 +280,11 @@ export function App() {
                   />
                   {filteredStudents.length === 0 ? (
                     <div className="glass-card p-12 flex flex-col items-center justify-center text-center">
-                      <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-4">
+                      <div className="w-16 h-16 bg-[var(--bg-secondary)] rounded-full flex items-center justify-center mb-4">
                         <span className="text-3xl">📭</span>
                       </div>
-                      <h3 className="text-lg font-bold text-white mb-2">A tabela está vazia</h3>
-                      <p className="text-sm text-gray-400 mb-6">Nenhum registro corresponde aos filtros atuais.</p>
+                      <h3 className="text-lg font-bold text-[var(--text-primary)] mb-2">A tabela está vazia</h3>
+                      <p className="text-sm text-[var(--text-secondary)] mb-6">Nenhum registro corresponde aos filtros atuais.</p>
                       <button onClick={handleResetFilters} className="px-4 py-2 bg-[#00A335] text-white font-semibold text-sm rounded-lg hover:bg-[#00882B] transition-colors cursor-pointer">
                         Limpar Filtros
                       </button>

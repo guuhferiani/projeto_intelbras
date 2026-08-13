@@ -423,7 +423,7 @@ export const FinanceiroTab: React.FC<FinanceiroTabProps> = ({ records, darkMode 
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-xs font-bold text-slate-800 dark:text-white">
+              <span className="text-xs font-bold text-[var(--text-primary)]">
                 Origem da Base Financeira
               </span>
               <span className="px-2 py-0.5 text-[10px] font-bold rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
@@ -472,11 +472,11 @@ export const FinanceiroTab: React.FC<FinanceiroTabProps> = ({ records, darkMode 
               Ref. BI Manual (R$ 17 mil)
             </span>
           </div>
-          <div className="text-3xl font-black text-slate-900 dark:text-white tracking-tight flex items-baseline gap-2">
+          <div className="text-3xl font-black text-[var(--text-primary)] tracking-tight flex items-baseline gap-2">
             <span>{formatCurrency(kpis.totalSomatoriaGlobal)}</span>
             <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">(~R$ 17.025,00)</span>
           </div>
-          <div className="text-[11px] text-slate-600 dark:text-gray-300 mt-1 leading-tight">
+          <div className="text-[11px] text-[var(--text-secondary)] mt-1 leading-tight">
             Bolsas (R$ 3.650) + Ajuda Custo (R$ 9.100) + EPIs/Uniformes (R$ 2.945) + Operacional
           </div>
         </div>
@@ -485,7 +485,7 @@ export const FinanceiroTab: React.FC<FinanceiroTabProps> = ({ records, darkMode 
         <div className="glass-card glass-card-hover p-4 relative overflow-hidden group">
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#00A335] to-emerald-400"></div>
           <div className="flex items-center justify-between mb-1.5">
-            <span className="text-[11px] font-semibold text-slate-500 dark:text-gray-400 uppercase tracking-wider">Realizado Líquido</span>
+            <span className="text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Realizado Líquido</span>
             <div className="w-7 h-7 rounded-lg bg-[#00A335]/15 text-[#00A335] flex items-center justify-center">
               <DollarSign className="w-4 h-4" />
             </div>
@@ -493,7 +493,7 @@ export const FinanceiroTab: React.FC<FinanceiroTabProps> = ({ records, darkMode 
           <div className="text-2xl font-black text-[#00882B] dark:text-emerald-400 tracking-tight">
             {formatCurrency(kpis.totalRealizado)}
           </div>
-          <div className="text-[11px] text-slate-500 dark:text-gray-400 mt-1">
+          <div className="text-[11px] text-[var(--text-secondary)] mt-1">
             Valor pago aos alunos
           </div>
         </div>
@@ -502,12 +502,12 @@ export const FinanceiroTab: React.FC<FinanceiroTabProps> = ({ records, darkMode 
         <div className="glass-card glass-card-hover p-4 relative overflow-hidden group">
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-cyan-400"></div>
           <div className="flex items-center justify-between mb-1.5">
-            <span className="text-[11px] font-semibold text-slate-500 dark:text-gray-400 uppercase tracking-wider">Bolsas de Estudo</span>
+            <span className="text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Bolsas de Estudo</span>
             <div className="w-7 h-7 rounded-lg bg-blue-500/15 text-blue-500 flex items-center justify-center">
               <Wallet className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+          <div className="text-2xl font-black text-[var(--text-primary)] tracking-tight">
             {formatCurrency(kpis.totalBolsa)}
           </div>
           <div className="text-[11px] text-blue-500 mt-1">
@@ -519,7 +519,7 @@ export const FinanceiroTab: React.FC<FinanceiroTabProps> = ({ records, darkMode 
         <div className="glass-card glass-card-hover p-4 relative overflow-hidden group">
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 to-indigo-500"></div>
           <div className="flex items-center justify-between mb-1.5">
-            <span className="text-[11px] font-semibold text-slate-500 dark:text-gray-400 uppercase tracking-wider">Ajuda de Custo</span>
+            <span className="text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Ajuda de Custo</span>
             <div className="w-7 h-7 rounded-lg bg-purple-500/15 text-purple-500 flex items-center justify-center">
               <PiggyBank className="w-4 h-4" />
             </div>
@@ -527,7 +527,7 @@ export const FinanceiroTab: React.FC<FinanceiroTabProps> = ({ records, darkMode 
           <div className="text-2xl font-black text-purple-600 dark:text-purple-300 tracking-tight">
             {formatCurrency(kpis.totalAjudaCusto)}
           </div>
-          <div className="text-[11px] text-slate-500 dark:text-gray-400 mt-1">
+          <div className="text-[11px] text-[var(--text-secondary)] mt-1">
             Alimentação / Transporte
           </div>
         </div>
@@ -536,7 +536,7 @@ export const FinanceiroTab: React.FC<FinanceiroTabProps> = ({ records, darkMode 
         <div className="glass-card glass-card-hover p-4 relative overflow-hidden group">
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-rose-500 to-red-600"></div>
           <div className="flex items-center justify-between mb-1.5">
-            <span className="text-[11px] font-semibold text-slate-500 dark:text-gray-400 uppercase tracking-wider">Descontos Faltas</span>
+            <span className="text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Descontos Faltas</span>
             <div className="w-7 h-7 rounded-lg bg-rose-500/15 text-rose-500 flex items-center justify-center">
               <TrendingDown className="w-4 h-4" />
             </div>
@@ -552,8 +552,8 @@ export const FinanceiroTab: React.FC<FinanceiroTabProps> = ({ records, darkMode 
       </div>
 
       {/* Filter Bar */}
-      <div className="glass-card p-4 border border-slate-200 dark:border-white/10 shadow-sm">
-        <div className="flex items-center justify-between gap-2 mb-3 pb-2 border-b border-slate-100 dark:border-white/5">
+      <div className="glass-card p-4 border border-[var(--border-color)] shadow-sm">
+        <div className="flex items-center justify-between gap-2 mb-3 pb-2 border-b border-[var(--border-color)]">
           <div className="flex items-center gap-2 text-xs font-bold text-[#00882B] dark:text-[#00A335] uppercase tracking-wider">
             <Search className="w-4 h-4" />
             <span>Filtros de Gestão Financeira & Lançamentos</span>
@@ -574,7 +574,7 @@ export const FinanceiroTab: React.FC<FinanceiroTabProps> = ({ records, darkMode 
           
           {/* Search */}
           <div className="relative">
-            <label className="block text-[11px] font-medium text-slate-500 dark:text-gray-400 mb-1 flex items-center gap-1">
+            <label className="block text-[11px] font-medium text-[var(--text-secondary)] mb-1 flex items-center gap-1">
               <Search className="w-3 h-3" /> Busca Aluno / CPF / Motivo
             </label>
             <input
@@ -582,19 +582,19 @@ export const FinanceiroTab: React.FC<FinanceiroTabProps> = ({ records, darkMode 
               placeholder="Nome, CPF ou Ausência..."
               value={filters.busca}
               onChange={(e) => handleFilterChange('busca', e.target.value)}
-              className="w-full bg-slate-50 dark:bg-gray-900/70 border border-slate-200 dark:border-white/10 rounded-xl px-3 py-1.5 text-xs text-slate-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-[#00A335] transition-colors"
+              className="w-full bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-xl px-3 py-1.5 text-xs text-[var(--text-primary)] placeholder-gray-400 focus:outline-none focus:border-[#00A335] transition-colors"
             />
           </div>
 
           {/* Curso */}
           <div>
-            <label className="block text-[11px] font-medium text-slate-500 dark:text-gray-400 mb-1 flex items-center gap-1">
+            <label className="block text-[11px] font-medium text-[var(--text-secondary)] mb-1 flex items-center gap-1">
               <BookOpen className="w-3 h-3" /> Curso
             </label>
             <select
               value={filters.curso}
               onChange={(e) => handleFilterChange('curso', e.target.value)}
-              className="w-full bg-slate-50 dark:bg-gray-900/70 border border-slate-200 dark:border-white/10 rounded-xl px-3 py-1.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-[#00A335] transition-colors cursor-pointer truncate"
+              className="w-full bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-xl px-3 py-1.5 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[#00A335] transition-colors cursor-pointer truncate"
             >
               <option value="all">Todos os Cursos ({cursos.length})</option>
               {cursos.map(c => (
@@ -605,13 +605,13 @@ export const FinanceiroTab: React.FC<FinanceiroTabProps> = ({ records, darkMode 
 
           {/* Turma */}
           <div>
-            <label className="block text-[11px] font-medium text-slate-500 dark:text-gray-400 mb-1 flex items-center gap-1">
+            <label className="block text-[11px] font-medium text-[var(--text-secondary)] mb-1 flex items-center gap-1">
               <Users className="w-3 h-3" /> Turma
             </label>
             <select
               value={filters.turma}
               onChange={(e) => handleFilterChange('turma', e.target.value)}
-              className="w-full bg-slate-50 dark:bg-gray-900/70 border border-slate-200 dark:border-white/10 rounded-xl px-3 py-1.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-[#00A335] transition-colors cursor-pointer"
+              className="w-full bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-xl px-3 py-1.5 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[#00A335] transition-colors cursor-pointer"
             >
               <option value="all">Todas as Turmas ({turmas.length})</option>
               {turmas.map(t => (
@@ -622,13 +622,13 @@ export const FinanceiroTab: React.FC<FinanceiroTabProps> = ({ records, darkMode 
 
           {/* Nível */}
           <div>
-            <label className="block text-[11px] font-medium text-slate-500 dark:text-gray-400 mb-1 flex items-center gap-1">
+            <label className="block text-[11px] font-medium text-[var(--text-secondary)] mb-1 flex items-center gap-1">
               <Layers className="w-3 h-3" /> Nível
             </label>
             <select
               value={filters.nivel}
               onChange={(e) => handleFilterChange('nivel', e.target.value)}
-              className="w-full bg-slate-50 dark:bg-gray-900/70 border border-slate-200 dark:border-white/10 rounded-xl px-3 py-1.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-[#00A335] transition-colors cursor-pointer"
+              className="w-full bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-xl px-3 py-1.5 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[#00A335] transition-colors cursor-pointer"
             >
               <option value="all">Todos os Níveis</option>
               {niveis.map(n => (
@@ -639,13 +639,13 @@ export const FinanceiroTab: React.FC<FinanceiroTabProps> = ({ records, darkMode 
 
           {/* Status Desconto */}
           <div>
-            <label className="block text-[11px] font-medium text-slate-500 dark:text-gray-400 mb-1 flex items-center gap-1">
+            <label className="block text-[11px] font-medium text-[var(--text-secondary)] mb-1 flex items-center gap-1">
               <AlertCircle className="w-3 h-3" /> Status de Desconto
             </label>
             <select
               value={filters.statusDesconto}
               onChange={(e) => handleFilterChange('statusDesconto', e.target.value)}
-              className="w-full bg-slate-50 dark:bg-gray-900/70 border border-slate-200 dark:border-white/10 rounded-xl px-3 py-1.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-[#00A335] transition-colors cursor-pointer"
+              className="w-full bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-xl px-3 py-1.5 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[#00A335] transition-colors cursor-pointer"
             >
               <option value="all">Todos os Lançamentos</option>
               <option value="com_desconto">Com Desconto / Falta</option>
@@ -663,10 +663,10 @@ export const FinanceiroTab: React.FC<FinanceiroTabProps> = ({ records, darkMode 
         <div className="glass-card p-5">
           <div className="flex items-center justify-between mb-3">
             <div>
-              <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <h3 className="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2">
                 <span>💰</span> Desembolso Financeiro por Turma
               </h3>
-              <p className="text-xs text-slate-500 dark:text-gray-400">Comparativo entre Realizado, Bolsas e Ajuda de Custo</p>
+              <p className="text-xs text-[var(--text-secondary)]">Comparativo entre Realizado, Bolsas e Ajuda de Custo</p>
             </div>
           </div>
           <div className="h-72">
@@ -678,10 +678,10 @@ export const FinanceiroTab: React.FC<FinanceiroTabProps> = ({ records, darkMode 
         <div className="glass-card p-5">
           <div className="flex items-center justify-between mb-3">
             <div>
-              <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <h3 className="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2">
                 <span>📊</span> Composição dos Repasses do Convênio
               </h3>
-              <p className="text-xs text-slate-500 dark:text-gray-400">Proporção entre Bolsas, Ajuda de Custo, EPIs e Descontos</p>
+              <p className="text-xs text-[var(--text-secondary)]">Proporção entre Bolsas, Ajuda de Custo, EPIs e Descontos</p>
             </div>
           </div>
           <div className="h-72">
@@ -693,10 +693,10 @@ export const FinanceiroTab: React.FC<FinanceiroTabProps> = ({ records, darkMode 
         <div className="glass-card p-5">
           <div className="flex items-center justify-between mb-3">
             <div>
-              <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <h3 className="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2">
                 <span>⚠️</span> Impacto de Descontos por Ausência
               </h3>
-              <p className="text-xs text-slate-500 dark:text-gray-400">Valores retidos por datas com ausência registrada</p>
+              <p className="text-xs text-[var(--text-secondary)]">Valores retidos por datas com ausência registrada</p>
             </div>
           </div>
           <div className="h-72">
@@ -708,10 +708,10 @@ export const FinanceiroTab: React.FC<FinanceiroTabProps> = ({ records, darkMode 
         <div className="glass-card p-5">
           <div className="flex items-center justify-between mb-3">
             <div>
-              <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <h3 className="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2">
                 <span>🏆</span> Repasses por Participante (Top Alunos)
               </h3>
-              <p className="text-xs text-slate-500 dark:text-gray-400">Total acumulado de valores realizados por aluno</p>
+              <p className="text-xs text-[var(--text-secondary)]">Total acumulado de valores realizados por aluno</p>
             </div>
           </div>
           <div className="h-72">
@@ -723,13 +723,13 @@ export const FinanceiroTab: React.FC<FinanceiroTabProps> = ({ records, darkMode 
 
       {/* Full Financial Records Table */}
       <div className="glass-card p-5">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-4 mb-4 border-b border-slate-200 dark:border-white/10">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-4 mb-4 border-b border-[var(--border-color)]">
           <div>
-            <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <h3 className="text-base font-bold text-[var(--text-primary)] flex items-center gap-2">
               <DollarSign className="w-5 h-5 text-[#00A335]" />
               Extrato Detalhado de Lançamentos & Recibos
             </h3>
-            <p className="text-xs text-slate-500 dark:text-gray-400">
+            <p className="text-xs text-[var(--text-secondary)]">
               Exibindo <strong>{filteredRecords.length}</strong> lançamentos • Total Realizado Líquido: <strong>{formatCurrency(kpis.totalRealizado)}</strong> • Orçamento Global: <strong>{formatCurrency(kpis.totalSomatoriaGlobal)}</strong>
             </p>
           </div>
@@ -756,7 +756,7 @@ export const FinanceiroTab: React.FC<FinanceiroTabProps> = ({ records, darkMode 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="border-b border-slate-200 dark:border-white/10 text-slate-500 dark:text-gray-400 font-semibold bg-slate-50 dark:bg-white/5">
+              <tr className="border-b border-[var(--border-color)] text-[var(--text-secondary)] font-semibold bg-[var(--bg-card)]">
                 <th className="p-2.5">CPF</th>
                 <th onClick={() => handleSort('nome')} className="p-2.5 cursor-pointer hover:text-[#00A335]">Nome do Aluno</th>
                 <th onClick={() => handleSort('turma')} className="p-2.5 cursor-pointer hover:text-[#00A335]">Turma</th>
@@ -768,20 +768,20 @@ export const FinanceiroTab: React.FC<FinanceiroTabProps> = ({ records, darkMode 
                 <th onClick={() => handleSort('realizado')} className="p-2.5 cursor-pointer hover:text-[#00A335] text-right">Realizado Líquido</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-white/5">
+            <tbody className="divide-y divide-[var(--border-color)]">
               {paginatedRecords.map((r) => {
                 return (
-                  <tr key={r.id} className="hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
-                    <td className="p-2.5 text-slate-500 dark:text-gray-400 font-mono text-[11px]">{r.cpf}</td>
-                    <td className="p-2.5 font-semibold text-slate-900 dark:text-white">
+                  <tr key={r.id} className="hover:bg-[var(--bg-card)] transition-colors">
+                    <td className="p-2.5 text-[var(--text-secondary)] font-mono text-[11px]">{r.cpf}</td>
+                    <td className="p-2.5 font-semibold text-[var(--text-primary)]">
                       {r.nome}
                     </td>
                     <td className="p-2.5 font-mono text-cyan-600 dark:text-cyan-300 font-medium">{r.turma}</td>
-                    <td className="p-2.5 text-slate-600 dark:text-gray-300 font-mono text-[11px]">{r.dataProgramada}</td>
-                    <td className="p-2.5 text-right font-mono text-slate-600 dark:text-gray-300">
+                    <td className="p-2.5 text-[var(--text-secondary)] font-mono text-[11px]">{r.dataProgramada}</td>
+                    <td className="p-2.5 text-right font-mono text-[var(--text-secondary)]">
                       {formatCurrency(r.bolsa)}
                     </td>
-                    <td className="p-2.5 text-right font-mono text-slate-600 dark:text-gray-300">
+                    <td className="p-2.5 text-right font-mono text-[var(--text-secondary)]">
                       {formatCurrency(r.ajudaCusto)}
                     </td>
                     <td className="p-2.5 text-right font-mono">
@@ -791,7 +791,7 @@ export const FinanceiroTab: React.FC<FinanceiroTabProps> = ({ records, darkMode 
                         <span className="text-slate-400">R$ 0,00</span>
                       )}
                     </td>
-                    <td className="p-2.5 text-slate-500 dark:text-gray-400 text-[11px] max-w-xs truncate" title={r.notaDesconto}>
+                    <td className="p-2.5 text-[var(--text-secondary)] text-[11px] max-w-xs truncate" title={r.notaDesconto}>
                       {r.notaDesconto !== '-' ? (
                         <span className="px-2 py-0.5 rounded bg-rose-500/15 text-rose-500 border border-rose-500/30">
                           {r.notaDesconto}
@@ -811,7 +811,7 @@ export const FinanceiroTab: React.FC<FinanceiroTabProps> = ({ records, darkMode 
         </div>
 
         {/* Pagination Controls */}
-        <div className="flex items-center justify-between pt-4 mt-4 border-t border-slate-200 dark:border-white/10 text-xs text-slate-500 dark:text-gray-400">
+        <div className="flex items-center justify-between pt-4 mt-4 border-t border-[var(--border-color)] text-xs text-[var(--text-secondary)]">
           <div className="flex items-center gap-2">
             <span>Itens por página:</span>
             <select
@@ -820,7 +820,7 @@ export const FinanceiroTab: React.FC<FinanceiroTabProps> = ({ records, darkMode 
                 setPageSize(Number(e.target.value));
                 setCurrentPage(1);
               }}
-              className="bg-white dark:bg-gray-900 border border-slate-200 dark:border-white/10 rounded-lg px-2.5 py-1 text-slate-800 dark:text-white"
+              className="bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-lg px-2.5 py-1 text-[var(--text-primary)]"
             >
               <option value={10}>10</option>
               <option value={25}>25</option>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Filter, Search, RotateCcw, BookOpen, Users, GraduationCap, Briefcase, UserCheck } from 'lucide-react';
 import { SGSETFilterState, SGSETStudent } from '../../types/bi';
+import { Select } from '../ui/Select';
 
 interface SGSETFilterBarProps {
   filters: SGSETFilterState;
@@ -35,8 +36,8 @@ export const SGSETFilterBar: React.FC<SGSETFilterBarProps> = ({
     filters.busca.trim() !== '';
 
   return (
-    <div className="glass-card p-4 mb-6 border border-white/10 shadow-lg">
-      <div className="flex items-center justify-between gap-2 mb-3 pb-2 border-b border-white/5">
+    <div className="glass-card p-4 mb-6 border border-[var(--border-color)] shadow-lg">
+      <div className="flex items-center justify-between gap-2 mb-3 pb-2 border-b border-[var(--border-color)]">
         <div className="flex items-center gap-2 text-xs font-semibold text-[#00A335] uppercase tracking-wider">
           <Filter className="w-4 h-4" />
           <span>Filtros do Sistema SGSET (Capacitação Técnica & Alunos)</span>
@@ -59,37 +60,37 @@ export const SGSETFilterBar: React.FC<SGSETFilterBarProps> = ({
           {filters.busca && (
             <span className="inline-flex items-center gap-1 bg-[#00A335]/20 text-[#00A335] px-2 py-1 rounded text-[10px] font-bold">
               Busca: {filters.busca}
-              <button onClick={() => handleFilterChange('busca', '')} className="hover:text-white">&times;</button>
+              <button onClick={() => handleFilterChange('busca', '')} className="hover:text-[var(--text-primary)]">&times;</button>
             </span>
           )}
           {filters.curso !== 'all' && (
             <span className="inline-flex items-center gap-1 bg-[#00A335]/20 text-[#00A335] px-2 py-1 rounded text-[10px] font-bold">
               Curso: {filters.curso}
-              <button onClick={() => handleFilterChange('curso', 'all')} className="hover:text-white">&times;</button>
+              <button onClick={() => handleFilterChange('curso', 'all')} className="hover:text-[var(--text-primary)]">&times;</button>
             </span>
           )}
           {filters.turma !== 'all' && (
             <span className="inline-flex items-center gap-1 bg-[#00A335]/20 text-[#00A335] px-2 py-1 rounded text-[10px] font-bold">
               Turma: {filters.turma}
-              <button onClick={() => handleFilterChange('turma', 'all')} className="hover:text-white">&times;</button>
+              <button onClick={() => handleFilterChange('turma', 'all')} className="hover:text-[var(--text-primary)]">&times;</button>
             </span>
           )}
           {filters.situacaoAluno !== 'all' && (
             <span className="inline-flex items-center gap-1 bg-[#00A335]/20 text-[#00A335] px-2 py-1 rounded text-[10px] font-bold">
               Status: {filters.situacaoAluno}
-              <button onClick={() => handleFilterChange('situacaoAluno', 'all')} className="hover:text-white">&times;</button>
+              <button onClick={() => handleFilterChange('situacaoAluno', 'all')} className="hover:text-[var(--text-primary)]">&times;</button>
             </span>
           )}
           {filters.situacaoOcupacional !== 'all' && (
             <span className="inline-flex items-center gap-1 bg-[#00A335]/20 text-[#00A335] px-2 py-1 rounded text-[10px] font-bold">
               Ocupação: {filters.situacaoOcupacional}
-              <button onClick={() => handleFilterChange('situacaoOcupacional', 'all')} className="hover:text-white">&times;</button>
+              <button onClick={() => handleFilterChange('situacaoOcupacional', 'all')} className="hover:text-[var(--text-primary)]">&times;</button>
             </span>
           )}
           {filters.escolaridade !== 'all' && (
             <span className="inline-flex items-center gap-1 bg-[#00A335]/20 text-[#00A335] px-2 py-1 rounded text-[10px] font-bold">
               Escolaridade: {filters.escolaridade}
-              <button onClick={() => handleFilterChange('escolaridade', 'all')} className="hover:text-white">&times;</button>
+              <button onClick={() => handleFilterChange('escolaridade', 'all')} className="hover:text-[var(--text-primary)]">&times;</button>
             </span>
           )}
         </div>
@@ -107,7 +108,7 @@ export const SGSETFilterBar: React.FC<SGSETFilterBarProps> = ({
             placeholder="Nome, CPF ou Matrícula..."
             value={filters.busca}
             onChange={(e) => handleFilterChange('busca', e.target.value)}
-            className="w-full bg-gray-900/70 border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-[#00A335] transition-colors"
+            className="w-full bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-lg px-2.5 py-1.5 text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[#00A335] transition-colors"
           />
         </div>
 
@@ -116,16 +117,14 @@ export const SGSETFilterBar: React.FC<SGSETFilterBarProps> = ({
           <label className="block text-[11px] font-medium text-gray-400 mb-1 flex items-center gap-1">
             <BookOpen className="w-3 h-3" /> Curso
           </label>
-          <select
+          <Select
             value={filters.curso}
-            onChange={(e) => handleFilterChange('curso', e.target.value)}
-            className="w-full bg-gray-900/70 border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#00A335] transition-colors cursor-pointer truncate"
-          >
-            <option value="all">Todos os Cursos ({cursos.length})</option>
-            {cursos.map(c => (
-              <option key={c} value={c}>{c}</option>
-            ))}
-          </select>
+            onChange={(val) => handleFilterChange('curso', val)}
+            options={[
+              { value: 'all', label: `Todos os Cursos (${cursos.length})` },
+              ...cursos.map(c => ({ value: c, label: c }))
+            ]}
+          />
         </div>
 
         {/* Turma */}
@@ -133,16 +132,14 @@ export const SGSETFilterBar: React.FC<SGSETFilterBarProps> = ({
           <label className="block text-[11px] font-medium text-gray-400 mb-1 flex items-center gap-1">
             <Users className="w-3 h-3" /> Turma
           </label>
-          <select
+          <Select
             value={filters.turma}
-            onChange={(e) => handleFilterChange('turma', e.target.value)}
-            className="w-full bg-gray-900/70 border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#00A335] transition-colors cursor-pointer"
-          >
-            <option value="all">Todas as Turmas</option>
-            {turmas.map(t => (
-              <option key={t} value={t}>{t}</option>
-            ))}
-          </select>
+            onChange={(val) => handleFilterChange('turma', val)}
+            options={[
+              { value: 'all', label: 'Todas as Turmas' },
+              ...turmas.map(t => ({ value: t, label: t }))
+            ]}
+          />
         </div>
 
         {/* Situação Aluno */}
@@ -150,16 +147,14 @@ export const SGSETFilterBar: React.FC<SGSETFilterBarProps> = ({
           <label className="block text-[11px] font-medium text-gray-400 mb-1 flex items-center gap-1">
             <UserCheck className="w-3 h-3" /> Situação Aluno
           </label>
-          <select
+          <Select
             value={filters.situacaoAluno}
-            onChange={(e) => handleFilterChange('situacaoAluno', e.target.value)}
-            className="w-full bg-gray-900/70 border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#00A335] transition-colors cursor-pointer"
-          >
-            <option value="all">Todos os Status</option>
-            {situacoesAluno.map(s => (
-              <option key={s} value={s}>{s}</option>
-            ))}
-          </select>
+            onChange={(val) => handleFilterChange('situacaoAluno', val)}
+            options={[
+              { value: 'all', label: 'Todos os Status' },
+              ...situacoesAluno.map(s => ({ value: s, label: s }))
+            ]}
+          />
         </div>
 
         {/* Situação Ocupacional */}
@@ -167,16 +162,14 @@ export const SGSETFilterBar: React.FC<SGSETFilterBarProps> = ({
           <label className="block text-[11px] font-medium text-gray-400 mb-1 flex items-center gap-1">
             <Briefcase className="w-3 h-3" /> Ocupação
           </label>
-          <select
+          <Select
             value={filters.situacaoOcupacional}
-            onChange={(e) => handleFilterChange('situacaoOcupacional', e.target.value)}
-            className="w-full bg-gray-900/70 border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#00A335] transition-colors cursor-pointer truncate"
-          >
-            <option value="all">Todas Ocupações</option>
-            {situacoesOcup.map(o => (
-              <option key={o} value={o}>{o}</option>
-            ))}
-          </select>
+            onChange={(val) => handleFilterChange('situacaoOcupacional', val)}
+            options={[
+              { value: 'all', label: 'Todas Ocupações' },
+              ...situacoesOcup.map(o => ({ value: o, label: o }))
+            ]}
+          />
         </div>
 
         {/* Escolaridade */}
@@ -184,16 +177,14 @@ export const SGSETFilterBar: React.FC<SGSETFilterBarProps> = ({
           <label className="block text-[11px] font-medium text-gray-400 mb-1 flex items-center gap-1">
             <GraduationCap className="w-3 h-3" /> Escolaridade
           </label>
-          <select
+          <Select
             value={filters.escolaridade}
-            onChange={(e) => handleFilterChange('escolaridade', e.target.value)}
-            className="w-full bg-gray-900/70 border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#00A335] transition-colors cursor-pointer truncate"
-          >
-            <option value="all">Todas Escolaridades</option>
-            {escolaridades.map(esc => (
-              <option key={esc} value={esc}>{esc}</option>
-            ))}
-          </select>
+            onChange={(val) => handleFilterChange('escolaridade', val)}
+            options={[
+              { value: 'all', label: 'Todas Escolaridades' },
+              ...escolaridades.map(esc => ({ value: esc, label: esc }))
+            ]}
+          />
         </div>
 
       </div>

@@ -58,7 +58,7 @@ export const Header: React.FC<HeaderProps> = ({
   const currentInfo = titles[activeTab] || titles.executive;
 
   return (
-    <header className="sticky top-0 z-30 bg-white/70 dark:bg-[#0b1120]/70 border-b border-white/20 dark:border-white/5 backdrop-blur-xl px-6 py-4 transition-all duration-400 shadow-sm">
+    <header className="sticky top-0 z-30 bg-[var(--bg-card)] border-b border-[var(--border-color)] backdrop-blur-xl px-6 py-4 transition-all duration-400 shadow-sm">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         
         {/* Left Side: Mobile Toggle & Page Title */}
@@ -66,7 +66,7 @@ export const Header: React.FC<HeaderProps> = ({
           {onToggleSidebar && (
             <button
               onClick={onToggleSidebar}
-              className="md:hidden p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200"
+              className="md:hidden p-2 rounded-xl bg-[var(--bg-secondary)] text-[var(--text-primary)]"
             >
               <Menu className="w-5 h-5" />
             </button>
@@ -75,12 +75,12 @@ export const Header: React.FC<HeaderProps> = ({
           <div>
             <div className="flex items-center gap-2.5">
               <IntelbrasLogo variant="green" size="sm" />
-              <div className="h-4 w-px bg-slate-200 dark:bg-slate-700" />
-              <h1 className="text-base font-extrabold text-slate-900 dark:text-white m-0 tracking-tight">
+              <div className="h-4 w-px bg-[var(--border-color)]" />
+              <h1 className="text-base font-extrabold text-[var(--text-primary)] m-0 tracking-tight">
                 {currentInfo.title}
               </h1>
             </div>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            <p className="text-xs text-[var(--text-secondary)] mt-0.5">
               {currentInfo.subtitle}
             </p>
           </div>
@@ -106,24 +106,24 @@ export const Header: React.FC<HeaderProps> = ({
           </button>
 
           {/* Quick Action Icons */}
-          <div className="flex items-center gap-1 bg-slate-100/50 dark:bg-slate-800/40 backdrop-blur-md p-1 rounded-xl border border-white/40 dark:border-white/10 shadow-sm">
+          <div className="flex items-center gap-1 bg-[var(--bg-secondary)] backdrop-blur-md p-1 rounded-xl border border-[var(--border-color)] shadow-sm">
             <button
               onClick={printReport}
-              className="p-2 hover:bg-white dark:hover:bg-slate-700 rounded-lg text-slate-600 dark:text-slate-300 hover:text-blue-500 transition-all duration-200 hover:-translate-y-0.5 cursor-pointer"
+              className="p-2 hover:bg-[var(--bg-card)] rounded-lg text-[var(--text-secondary)] hover:text-blue-500 transition-all duration-200 hover:-translate-y-0.5 cursor-pointer"
               title="Imprimir / Exportar Relatório em PDF"
             >
               <Download className="w-4 h-4" />
             </button>
             <button
               onClick={onRefresh}
-              className="p-2 hover:bg-white dark:hover:bg-slate-700 rounded-lg text-slate-600 dark:text-slate-300 hover:text-[#00A335] transition-all duration-200 hover:-translate-y-0.5 cursor-pointer"
+              className="p-2 hover:bg-[var(--bg-card)] rounded-lg text-[var(--text-secondary)] hover:text-[#00A335] transition-all duration-200 hover:-translate-y-0.5 cursor-pointer"
               title="Recarregar Bases de Dados"
             >
               <RefreshCw className="w-4 h-4" />
             </button>
             <button
               onClick={() => setDarkMode(!darkMode)}
-              className="p-2 hover:bg-white dark:hover:bg-slate-700 rounded-lg text-slate-600 dark:text-slate-300 hover:text-amber-500 transition-all duration-200 hover:-translate-y-0.5 cursor-pointer"
+              className="p-2 hover:bg-[var(--bg-card)] rounded-lg text-[var(--text-secondary)] hover:text-amber-500 transition-all duration-200 hover:-translate-y-0.5 cursor-pointer"
               title="Alternar Tema Claro / Escuro"
             >
               {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}

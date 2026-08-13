@@ -24,21 +24,21 @@
   }
 
   .light {
-    /* Refined Light Mode Colors */
-    --bg-primary: #f1f5f9;
-    --bg-secondary: #ffffff;
-    --bg-card: rgba(255, 255, 255, 0.7);
-    --border-color: rgba(255, 255, 255, 0.6);
-    --border-highlight: rgba(255, 255, 255, 1);
-    --text-primary: #0f172a;
-    --text-secondary: #475569;
-    --text-muted: #94a3b8;
+    /* High Contrast Light Mode Colors */
+    --bg-primary: #f1f5f9; /* Off-white gray for primary background */
+    --bg-secondary: #f8fafc;
+    --bg-card: rgba(255, 255, 255, 0.95); /* Almost solid white for cards */
+    --border-color: rgba(0, 0, 0, 0.12); /* Visible dark border */
+    --border-highlight: rgba(0, 163, 53, 0.6); /* Green border on hover */
+    --text-primary: #020617; /* Very dark text for high contrast */
+    --text-secondary: #334155; /* Darker secondary text */
+    --text-muted: #64748b;
     
     --intelbras-green: #00882b;
     --intelbras-light-green: #00a335;
     --intelbras-dark-green: #005e1e;
-    --intelbras-tint: rgba(0, 163, 53, 0.1);
-    --intelbras-glow: rgba(0, 163, 53, 0.15);
+    --intelbras-tint: rgba(0, 163, 53, 0.08);
+    --intelbras-glow: rgba(0, 163, 53, 0.2);
     
     --senai-red: #e30613;
   }

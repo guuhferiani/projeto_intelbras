@@ -84,7 +84,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         />
       )}
       <aside 
-        className={`fixed top-0 left-0 bottom-0 z-50 bg-white/95 dark:bg-[#0b1120]/95 backdrop-blur-xl border-r border-white/20 dark:border-white/5 transition-all duration-400 ease-in-out flex flex-col justify-between shadow-[4px_0_24px_-4px_rgba(0,0,0,0.1)] dark:shadow-none 
+        className={`fixed top-0 left-0 bottom-0 z-50 bg-[var(--bg-card)] backdrop-blur-xl border-r border-[var(--border-color)] transition-all duration-400 ease-in-out flex flex-col justify-between shadow-[4px_0_24px_-4px_rgba(0,0,0,0.1)] dark:shadow-none 
           ${collapsed ? 'hidden md:flex w-20' : 'w-72'} 
           ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
         `}
@@ -128,7 +128,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
         {/* Menu Section Title */}
         {!collapsed && (
-          <div className="px-5 pt-5 pb-2 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+          <div className="px-5 pt-5 pb-2 text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-wider">
             Módulos do Sistema
           </div>
         )}
@@ -146,7 +146,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 className={`w-full flex items-center gap-3.5 px-3.5 py-3 rounded-xl text-left transition-all duration-300 ease-out cursor-pointer relative group ${
                   isActive
                     ? 'bg-[#E8F8EE]/80 dark:bg-[#00A335]/15 text-[#00882B] dark:text-[#00A335] font-bold shadow-sm backdrop-blur-md'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/60 dark:hover:bg-slate-800/40 font-medium hover:translate-x-1'
+                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] font-medium hover:translate-x-1'
                 }`}
                 title={collapsed ? item.label : undefined}
               >
@@ -159,7 +159,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${
                     isActive 
                       ? 'bg-[#00A335] text-white shadow-md shadow-[#00A335]/30' 
-                      : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 group-hover:text-[#00A335] group-hover:bg-[#E8F8EE] dark:group-hover:bg-[#00A335]/20'
+                      : 'bg-[var(--bg-secondary)] text-[var(--text-secondary)] group-hover:text-[#00A335] group-hover:bg-[#E8F8EE] dark:group-hover:bg-[#00A335]/20'
                   }`}
                 >
                   <Icon className="w-4 h-4" />
@@ -169,7 +169,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   <div className="flex-1 flex items-center justify-between min-w-0">
                     <div className="truncate">
                       <div className="text-xs font-semibold leading-none">{item.label}</div>
-                      <div className="text-[10px] text-slate-400 dark:text-slate-500 mt-1 truncate">
+                      <div className="text-[10px] text-[var(--text-secondary)] mt-1 truncate">
                         {item.desc}
                       </div>
                     </div>
@@ -179,7 +179,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider ${
                           isActive
                             ? 'bg-[#00A335] text-white shadow-sm'
-                            : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400'
+                            : 'bg-[var(--bg-secondary)] text-[var(--text-secondary)]'
                         }`}
                       >
                         {item.badge}
@@ -194,15 +194,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
       </div>
 
       {/* Bottom Sidebar Footer Block */}
-      <div className="p-4 border-t border-white/20 dark:border-white/5 bg-white/40 dark:bg-slate-900/40 backdrop-blur-md">
+      <div className="p-4 border-t border-[var(--border-color)] bg-[var(--bg-primary)] backdrop-blur-md">
         {!collapsed ? (
           <div className="space-y-3">
-            <div className="p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm">
-              <div className="flex items-center gap-2 text-xs font-bold text-slate-800 dark:text-white mb-1">
+            <div className="p-3 rounded-xl bg-[var(--bg-card)] border border-[var(--border-color)] shadow-sm">
+              <div className="flex items-center gap-2 text-xs font-bold text-[var(--text-primary)] mb-1">
                 <CheckCircle2 className="w-4 h-4 text-[#00A335]" />
                 <span>Base Conectada</span>
               </div>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-tight">
+              <p className="text-[11px] text-[var(--text-secondary)] leading-tight">
                 SGSET • Relatório Final • Financeiro
               </p>
             </div>
