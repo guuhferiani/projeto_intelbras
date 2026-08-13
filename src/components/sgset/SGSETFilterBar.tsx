@@ -52,6 +52,48 @@ export const SGSETFilterBar: React.FC<SGSETFilterBarProps> = ({
           </button>
         )}
       </div>
+      
+      {/* Active Badges */}
+      {isFiltered && (
+        <div className="flex flex-wrap gap-2 mb-4">
+          {filters.busca && (
+            <span className="inline-flex items-center gap-1 bg-[#00A335]/20 text-[#00A335] px-2 py-1 rounded text-[10px] font-bold">
+              Busca: {filters.busca}
+              <button onClick={() => handleFilterChange('busca', '')} className="hover:text-white">&times;</button>
+            </span>
+          )}
+          {filters.curso !== 'all' && (
+            <span className="inline-flex items-center gap-1 bg-[#00A335]/20 text-[#00A335] px-2 py-1 rounded text-[10px] font-bold">
+              Curso: {filters.curso}
+              <button onClick={() => handleFilterChange('curso', 'all')} className="hover:text-white">&times;</button>
+            </span>
+          )}
+          {filters.turma !== 'all' && (
+            <span className="inline-flex items-center gap-1 bg-[#00A335]/20 text-[#00A335] px-2 py-1 rounded text-[10px] font-bold">
+              Turma: {filters.turma}
+              <button onClick={() => handleFilterChange('turma', 'all')} className="hover:text-white">&times;</button>
+            </span>
+          )}
+          {filters.situacaoAluno !== 'all' && (
+            <span className="inline-flex items-center gap-1 bg-[#00A335]/20 text-[#00A335] px-2 py-1 rounded text-[10px] font-bold">
+              Status: {filters.situacaoAluno}
+              <button onClick={() => handleFilterChange('situacaoAluno', 'all')} className="hover:text-white">&times;</button>
+            </span>
+          )}
+          {filters.situacaoOcupacional !== 'all' && (
+            <span className="inline-flex items-center gap-1 bg-[#00A335]/20 text-[#00A335] px-2 py-1 rounded text-[10px] font-bold">
+              Ocupação: {filters.situacaoOcupacional}
+              <button onClick={() => handleFilterChange('situacaoOcupacional', 'all')} className="hover:text-white">&times;</button>
+            </span>
+          )}
+          {filters.escolaridade !== 'all' && (
+            <span className="inline-flex items-center gap-1 bg-[#00A335]/20 text-[#00A335] px-2 py-1 rounded text-[10px] font-bold">
+              Escolaridade: {filters.escolaridade}
+              <button onClick={() => handleFilterChange('escolaridade', 'all')} className="hover:text-white">&times;</button>
+            </span>
+          )}
+        </div>
+      )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 text-xs">
         

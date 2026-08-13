@@ -16,6 +16,7 @@ import { loadLiveFinancialFiles } from './utils/dataParser';
 export function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [students, setStudents] = useState<SGSETStudent[]>([]);
   const [relatorioFinalRecords, setRelatorioFinalRecords] = useState<RelatorioFinalRecord[]>([]);
   const [financeiroRecords, setFinanceiroRecords] = useState<FinanceiroRecord[]>([]);
@@ -177,7 +178,7 @@ export function App() {
     : filteredStudents.length;
 
   return (
-    <div className={`min-h-screen flex ${darkMode ? 'dark bg-[#0b1120] text-slate-100' : 'light bg-[#f4f6f8] text-slate-900'}`}>
+    <div className={`min-h-screen flex ${darkMode ? 'dark' : 'light'}`}>
       
       {/* 1. Left Sidebar Navigation */}
       <Sidebar
@@ -185,6 +186,8 @@ export function App() {
         setActiveTab={(tab) => setActiveTab(tab as any)}
         collapsed={sidebarCollapsed}
         setCollapsed={setSidebarCollapsed}
+        mobileMenuOpen={mobileMenuOpen}
+        setMobileMenuOpen={setMobileMenuOpen}
         onOpenUploadModal={() => setIsUploadOpen(true)}
         totalAlunos={students.length}
         totalLancamentos={financeiroRecords.length}
@@ -205,7 +208,7 @@ export function App() {
           onRefresh={loadDefaultData}
           onOpenUploadModal={() => setIsUploadOpen(true)}
           activeTab={activeTab}
-          onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
+          onToggleSidebar={() => setMobileMenuOpen(!mobileMenuOpen)}
         />
 
         {/* Content Container */}
@@ -213,8 +216,28 @@ export function App() {
           
           {/* Dynamic Views */}
           {loading ? (
-            <div className="glass-card p-16 text-center text-sm font-bold text-[#00A335] animate-pulse">
-              Carregando dados do Intelbras BI Analytics...
+            <div className="w-full space-y-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
+                {[...Array(6)].map((_, i) => (
+                  <div key={i} className="glass-card p-4 h-28 flex flex-col justify-between">
+                    <div className="flex justify-between items-center">
+                      <div className="skeleton-box h-4 w-20"></div>
+                      <div className="skeleton-box h-7 w-7 rounded-lg"></div>
+                    </div>
+                    <div className="skeleton-box h-8 w-16 mt-2"></div>
+                    <div className="skeleton-box h-3 w-24 mt-3"></div>
+                  </div>
+                ))}
+              </div>
+              <div className="glass-card p-4 h-24 mb-6">
+                <div className="skeleton-box h-6 w-48 mb-4"></div>
+                <div className="grid grid-cols-6 gap-3">
+                  {[...Array(6)].map((_, i) => (
+                    <div key={i} className="skeleton-box h-10 w-full"></div>
+                  ))}
+                </div>
+              </div>
+              <div className="glass-card h-[500px] w-full skeleton-box"></div>
             </div>
           ) : (
             <div>
@@ -228,7 +251,20 @@ export function App() {
                     students={students}
                     onReset={handleResetFilters}
                   />
-                  <SGSETExecutiveTab students={filteredStudents} darkMode={darkMode} />
+                  {filteredStudents.length === 0 ? (
+                    <div className="glass-card p-12 flex flex-col items-center justify-center text-center">
+                      <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-4">
+                        <span className="text-3xl">🔍</span>
+                      </div>
+                      <h3 className="text-lg font-bold text-white mb-2">Nenhum aluno encontrado</h3>
+                      <p className="text-sm text-gray-400 mb-6">Tente ajustar os filtros para encontrar os resultados desejados.</p>
+                      <button onClick={handleResetFilters} className="px-4 py-2 bg-[#00A335] text-white font-semibold text-sm rounded-lg hover:bg-[#00882B] transition-colors cursor-pointer">
+                        Limpar Filtros
+                      </button>
+                    </div>
+                  ) : (
+                    <SGSETExecutiveTab students={filteredStudents} darkMode={darkMode} />
+                  )}
                 </>
               )}
 
@@ -242,7 +278,20 @@ export function App() {
                     students={students}
                     onReset={handleResetFilters}
                   />
-                  <SGSETStudentsTableTab students={filteredStudents} kpis={kpis} />
+                  {filteredStudents.length === 0 ? (
+                    <div className="glass-card p-12 flex flex-col items-center justify-center text-center">
+                      <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-4">
+                        <span className="text-3xl">📭</span>
+                      </div>
+                      <h3 className="text-lg font-bold text-white mb-2">A tabela está vazia</h3>
+                      <p className="text-sm text-gray-400 mb-6">Nenhum registro corresponde aos filtros atuais.</p>
+                      <button onClick={handleResetFilters} className="px-4 py-2 bg-[#00A335] text-white font-semibold text-sm rounded-lg hover:bg-[#00882B] transition-colors cursor-pointer">
+                        Limpar Filtros
+                      </button>
+                    </div>
+                  ) : (
+                    <SGSETStudentsTableTab students={filteredStudents} kpis={kpis} />
+                  )}
                 </>
               )}
 

@@ -58,7 +58,7 @@ export const Header: React.FC<HeaderProps> = ({
   const currentInfo = titles[activeTab] || titles.executive;
 
   return (
-    <header className="sticky top-0 z-30 bg-white/90 dark:bg-[#0f172a]/90 border-b border-slate-200 dark:border-slate-800 backdrop-blur-md px-6 py-4 transition-colors">
+    <header className="sticky top-0 z-30 bg-white/70 dark:bg-[#0b1120]/70 border-b border-white/20 dark:border-white/5 backdrop-blur-xl px-6 py-4 transition-all duration-400 shadow-sm">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         
         {/* Left Side: Mobile Toggle & Page Title */}
@@ -98,7 +98,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Upload Button */}
           <button
             onClick={onOpenUploadModal}
-            className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#00A335] hover:bg-[#00882B] text-white font-semibold text-xs shadow-md shadow-[#00A335]/25 transition-all cursor-pointer"
+            className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#00A335] hover:bg-[#00882B] text-white font-semibold text-xs shadow-lg shadow-[#00A335]/30 hover:shadow-[#00A335]/50 transition-all duration-300 hover:-translate-y-0.5 cursor-pointer"
             title="Importar novas planilhas de dados"
           >
             <UploadCloud className="w-4 h-4" />
@@ -106,24 +106,24 @@ export const Header: React.FC<HeaderProps> = ({
           </button>
 
           {/* Quick Action Icons */}
-          <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800/90 p-1 rounded-xl border border-slate-200 dark:border-slate-700">
+          <div className="flex items-center gap-1 bg-slate-100/50 dark:bg-slate-800/40 backdrop-blur-md p-1 rounded-xl border border-white/40 dark:border-white/10 shadow-sm">
             <button
               onClick={printReport}
-              className="p-2 hover:bg-white dark:hover:bg-slate-700 rounded-lg text-slate-600 dark:text-slate-300 hover:text-blue-500 transition-colors cursor-pointer"
+              className="p-2 hover:bg-white dark:hover:bg-slate-700 rounded-lg text-slate-600 dark:text-slate-300 hover:text-blue-500 transition-all duration-200 hover:-translate-y-0.5 cursor-pointer"
               title="Imprimir / Exportar Relatório em PDF"
             >
               <Download className="w-4 h-4" />
             </button>
             <button
               onClick={onRefresh}
-              className="p-2 hover:bg-white dark:hover:bg-slate-700 rounded-lg text-slate-600 dark:text-slate-300 hover:text-[#00A335] transition-colors cursor-pointer"
+              className="p-2 hover:bg-white dark:hover:bg-slate-700 rounded-lg text-slate-600 dark:text-slate-300 hover:text-[#00A335] transition-all duration-200 hover:-translate-y-0.5 cursor-pointer"
               title="Recarregar Bases de Dados"
             >
               <RefreshCw className="w-4 h-4" />
             </button>
             <button
               onClick={() => setDarkMode(!darkMode)}
-              className="p-2 hover:bg-white dark:hover:bg-slate-700 rounded-lg text-slate-600 dark:text-slate-300 hover:text-amber-500 transition-colors cursor-pointer"
+              className="p-2 hover:bg-white dark:hover:bg-slate-700 rounded-lg text-slate-600 dark:text-slate-300 hover:text-amber-500 transition-all duration-200 hover:-translate-y-0.5 cursor-pointer"
               title="Alternar Tema Claro / Escuro"
             >
               {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}

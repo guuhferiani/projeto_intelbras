@@ -18,6 +18,8 @@ interface SidebarProps {
   setActiveTab: (tab: string) => void;
   collapsed: boolean;
   setCollapsed: (val: boolean) => void;
+  mobileMenuOpen?: boolean;
+  setMobileMenuOpen?: (val: boolean) => void;
   onOpenUploadModal: () => void;
   totalAlunos: number;
   totalLancamentos: number;
@@ -28,6 +30,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   setActiveTab,
   collapsed,
   setCollapsed,
+  mobileMenuOpen = false,
+  setMobileMenuOpen,
   onOpenUploadModal,
   totalAlunos,
   totalLancamentos
@@ -71,11 +75,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
   ];
 
   return (
-    <aside 
-      className={`fixed top-0 left-0 bottom-0 z-40 bg-white dark:bg-[#0f172a] border-r border-slate-200 dark:border-slate-800 transition-all duration-300 flex flex-col justify-between shadow-xl ${
-        collapsed ? 'w-20' : 'w-72'
-      }`}
-    >
+    <>
+      {/* Mobile Overlay */}
+      {mobileMenuOpen && (
+        <div 
+          className="md:hidden fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
+          onClick={() => setMobileMenuOpen?.(false)}
+        />
+      )}
+      <aside 
+        className={`fixed top-0 left-0 bottom-0 z-50 bg-white/95 dark:bg-[#0b1120]/95 backdrop-blur-xl border-r border-white/20 dark:border-white/5 transition-all duration-400 ease-in-out flex flex-col justify-between shadow-[4px_0_24px_-4px_rgba(0,0,0,0.1)] dark:shadow-none 
+          ${collapsed ? 'hidden md:flex w-20' : 'w-72'} 
+          ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+        `}
+      >
       {/* Top Header / Brand Block */}
       <div>
         <div className="h-20 bg-gradient-to-r from-[#00882B] via-[#00A335] to-[#00B33C] px-4 flex items-center justify-between text-white shadow-md relative overflow-hidden">
@@ -130,10 +143,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <button
                 key={item.id}
                 onClick={() => setActiveTab(item.id)}
-                className={`w-full flex items-center gap-3.5 px-3.5 py-3 rounded-xl text-left transition-all duration-200 cursor-pointer relative group ${
+                className={`w-full flex items-center gap-3.5 px-3.5 py-3 rounded-xl text-left transition-all duration-300 ease-out cursor-pointer relative group ${
                   isActive
-                    ? 'bg-[#E8F8EE] dark:bg-[#00A335]/15 text-[#00882B] dark:text-[#00A335] font-bold shadow-sm'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 font-medium'
+                    ? 'bg-[#E8F8EE]/80 dark:bg-[#00A335]/15 text-[#00882B] dark:text-[#00A335] font-bold shadow-sm backdrop-blur-md'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/60 dark:hover:bg-slate-800/40 font-medium hover:translate-x-1'
                 }`}
                 title={collapsed ? item.label : undefined}
               >
@@ -181,7 +194,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       </div>
 
       {/* Bottom Sidebar Footer Block */}
-      <div className="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50">
+      <div className="p-4 border-t border-white/20 dark:border-white/5 bg-white/40 dark:bg-slate-900/40 backdrop-blur-md">
         {!collapsed ? (
           <div className="space-y-3">
             <div className="p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm">
@@ -196,7 +209,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
             <button
               onClick={onOpenUploadModal}
-              className="w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl bg-[#00A335] hover:bg-[#00882B] text-white font-semibold text-xs shadow-md shadow-[#00A335]/25 transition-all cursor-pointer"
+              className="w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl bg-[#00A335] hover:bg-[#00882B] text-white font-semibold text-xs shadow-lg shadow-[#00A335]/30 hover:shadow-[#00A335]/50 transition-all duration-300 hover:-translate-y-0.5 cursor-pointer"
             >
               <UploadCloud className="w-4 h-4" />
               <span>Importar Planilha</span>
@@ -205,7 +218,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         ) : (
           <button
             onClick={onOpenUploadModal}
-            className="w-full flex justify-center py-2.5 rounded-xl bg-[#00A335] text-white shadow-md cursor-pointer"
+            className="w-full flex justify-center py-2.5 rounded-xl bg-[#00A335] hover:bg-[#00882B] text-white shadow-lg shadow-[#00A335]/30 hover:shadow-[#00A335]/50 transition-all duration-300 hover:-translate-y-0.5 cursor-pointer"
             title="Importar Planilhas"
           >
             <UploadCloud className="w-4 h-4" />
@@ -213,5 +226,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
         )}
       </div>
     </aside>
+    </>
   );
 };

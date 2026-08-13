@@ -75,11 +75,11 @@ export const SGSETStudentsTableTab: React.FC<SGSETStudentsTableTabProps> = ({ st
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto">
-        <table className="w-full text-left text-xs border-collapse">
-          <thead>
-            <tr className="border-b border-white/10 text-gray-400 font-semibold bg-white/5">
-              <th onClick={() => handleSort('matricula')} className="p-2.5 cursor-pointer hover:text-white">Matrícula</th>
+      <div className="overflow-x-auto overflow-y-auto max-h-[500px] rounded-lg border border-white/5">
+        <table className="w-full text-left text-xs border-collapse relative">
+          <thead className="sticky top-0 z-10 bg-slate-100/90 dark:bg-slate-900/90 backdrop-blur-md shadow-sm">
+            <tr className="border-b border-white/10 text-slate-600 dark:text-gray-400 font-semibold">
+              <th onClick={() => handleSort('matricula')} className="p-2.5 cursor-pointer hover:text-slate-900 dark:hover:text-white">Matrícula</th>
               <th className="p-2.5">CPF</th>
               <th onClick={() => handleSort('nome')} className="p-2.5 cursor-pointer hover:text-white">Nome do Aluno</th>
               <th className="p-2.5">Sexo / Idade</th>
