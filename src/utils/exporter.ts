@@ -1,30 +1,29 @@
 import * as XLSX from 'xlsx';
 import { SaleRecord, SGSETStudent, RelatorioFinalRecord, FinanceiroRecord } from '../types/bi';
-import { formatCurrency } from './dataParser';
 
 // Export dataset to Excel (.xlsx)
 export function exportToExcel(data: SaleRecord[], fileName: string = 'Relatorio_Intelbras_BI.xlsx') {
   const exportData = data.map(item => ({
     'NF': item.ID_Venda,
     'Data': item.Data,
-    'Ano-Mês': item.Ano_Mes,
-    'Cliente': item.Cliente,
+    'Ano-Mês': item.Ano_Mes || '',
+    'Cliente': item.Cliente || '',
     'Vendedor': item.Vendedor,
     'Região': item.Regiao,
-    'UF': item.Estado_UF,
-    'Canal': item.Canal,
+    'UF': item.Estado_UF || item.Estado,
+    'Canal': item.Canal || item.Canal_Venda,
     'Segmento': item.Segmento,
-    'Linha de Produto': item.Linha_Produto,
+    'Linha de Produto': item.Linha_Produto || '',
     'Produto': item.Produto,
     'Qtd': item.Quantidade,
     'Preço Unit. (R$)': item.Preco_Unitario,
-    'Custo Unit. (R$)': item.Custo_Unitario,
-    'Faturamento (R$)': item.Faturamento,
+    'Custo Unit. (R$)': item.Custo_Unitario || 0,
+    'Faturamento (R$)': item.Faturamento || item.Valor_Total,
     'Custo Total (R$)': item.Custo_Total,
     'Lucro Bruto (R$)': item.Lucro_Bruto,
-    'Margem (%)': `${item.Margem_Percentual.toFixed(1)}%`,
-    'Status': item.Status_Pedido,
-    'Prazo (Dias)': item.Prazo_Entrega_Dias
+    'Margem (%)': `${(item.Margem_Percentual ?? item.Margem_Lucro_Pct ?? 0).toFixed(1)}%`,
+    'Status': item.Status_Pedido || item.Status_Entrega,
+    'Prazo (Dias)': item.Prazo_Entrega_Dias || 0
   }));
 
   const worksheet = XLSX.utils.json_to_sheet(exportData);
@@ -71,17 +70,17 @@ export function exportRelatorioFinalToExcel(records: RelatorioFinalRecord[], fil
     'CPF': r.cpf,
     'Curso': r.curso,
     'Turma': r.turma,
-    'Escola': r.escola,
-    'Turno': r.turno,
+    'Escola': r.escola || 'SENAI Mariano Ferraz',
+    'Turno': r.turno || 'Tarde',
     'Carga Horária (h)': r.cargaHoraria,
-    'Docente': r.docente,
-    'Nota Final': r.notaFinal,
-    'Frequência (%)': `${r.frequencia}%`,
-    'Faltas': r.faltas,
-    'Resultado Final': r.resultadoFinal,
-    'Situação': r.situacao,
-    'Data Início': r.dataInicio,
-    'Data Fim': r.dataFim,
+    'Docente': r.docente || r.docentes || '',
+    'Nota Final': r.notaFinal ?? r.mediaFinal ?? 0,
+    'Frequência (%)': `${r.frequencia ?? r.frequenciaPct ?? 0}%`,
+    'Faltas': r.faltas ?? r.faltasHoras ?? 0,
+    'Resultado Final': r.resultadoFinal ?? r.resultado ?? 'Aprovado',
+    'Situação': r.situacao || 'Concluído',
+    'Data Início': r.dataInicio || '',
+    'Data Fim': r.dataFim || '',
     'Arquivo Origem': r.arquivoOrigem || ''
   }));
 

@@ -3,7 +3,7 @@ export interface SGSETStudent {
   matricula: string;
   cpf: string;
   nome: string;
-  sexo: string;
+  sexo: string; // 'Masculino' | 'Feminino'
   dataNascimento: string;
   idade: number;
   faixaEtaria: string;
@@ -17,7 +17,7 @@ export interface SGSETStudent {
   dataInicio: string;
   dataFim: string;
   situacaoOcupacional: string;
-  situacaoAluno: string;
+  situacaoAluno: string; // 'ATIVO' | 'CONCLUÍDO' | 'EVASÃO' | etc.
   arquivoOrigem?: string;
 }
 
@@ -48,23 +48,28 @@ export interface SGSETFilterState {
 export interface RelatorioFinalRecord {
   id: string;
   matricula: string;
-  nome: string;
   cpf: string;
-  curso: string;
-  escola: string;
-  cargaHoraria: number;
-  turma: string;
-  turno: string;
-  dataInicio: string;
-  dataFim: string;
-  situacao: string;
-  localRealizacao: string;
-  numProposta: string;
-  notaFinal: number;
-  docente: string;
-  faltas: number;
+  nome: string;
+  email?: string;
+  telefone?: string;
+  escola?: string;
+  turno?: string;
   frequencia: number;
+  frequenciaPct?: number;
+  faltas: number;
+  faltasHoras?: number;
+  notaFinal: number;
+  mediaFinal?: number;
+  resultado?: string;
   resultadoFinal: string;
+  situacao?: string;
+  turma: string;
+  curso: string;
+  dataInicio?: string;
+  dataFim?: string;
+  cargaHoraria: number;
+  docente: string;
+  docentes?: string;
   arquivoOrigem?: string;
 }
 
@@ -81,8 +86,8 @@ export interface RelatorioFinalKPIData {
 export interface RelatorioFinalFilterState {
   curso: string;
   turma: string;
-  docente: string;
   resultadoFinal: string;
+  docente: string;
   faixaNota: string;
   busca: string;
 }
@@ -110,9 +115,12 @@ export interface FinanceiroRecord {
 }
 
 export interface FinanceiroKPIData {
-  totalRealizado: number;
+  totalSomatoriaGlobal: number; // R$ 17.025 (~R$ 17 mil)
+  totalBrutoBeneficios: number; // Bolsa + Ajuda de Custo
+  totalRealizado: number; // Realizado Líquido
   totalBolsa: number;
   totalAjudaCusto: number;
+  totalEPIUniforme: number;
   totalDescontos: number;
   totalLancamentos: number;
   alunosBeneficiados: number;
@@ -158,24 +166,30 @@ export interface KPIData {
 export interface SaleRecord {
   ID_Venda: string;
   Data: string;
-  Ano: number;
-  Mes: number;
-  Ano_Mes: string;
-  Cliente: string;
-  Vendedor: string;
-  Regiao: string;
-  Estado_UF: string;
-  Canal: string;
+  Ano_Mes?: string;
+  Cliente?: string;
   Segmento: string;
-  Linha_Produto: string;
+  Regiao: string;
+  Estado: string;
+  Estado_UF?: string;
+  Cidade: string;
+  Vendedor: string;
+  Canal?: string;
+  Canal_Venda: string;
   Produto: string;
+  Linha_Produto?: string;
+  Categoria: string;
   Quantidade: number;
   Preco_Unitario: number;
-  Custo_Unitario: number;
-  Faturamento: number;
+  Custo_Unitario?: number;
+  Valor_Total: number;
+  Faturamento?: number;
   Custo_Total: number;
   Lucro_Bruto: number;
-  Margem_Percentual: number;
-  Status_Pedido: string;
-  Prazo_Entrega_Dias: number;
+  Margem_Percentual?: number;
+  Margem_Lucro_Pct: number;
+  Meta_Vendedor: number;
+  Status_Pedido?: string;
+  Status_Entrega: string;
+  Prazo_Entrega_Dias?: number;
 }

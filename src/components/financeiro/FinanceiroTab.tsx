@@ -18,7 +18,10 @@ import {
   AlertCircle,
   PiggyBank,
   FolderCheck,
-  CheckCircle2
+  CheckCircle2,
+  Sparkles,
+  Calculator,
+  ShieldAlert
 } from 'lucide-react';
 import { exportFinanceiroToExcel, printReport } from '../../utils/exporter';
 import { formatCurrency } from '../../utils/dataParser';
@@ -97,14 +100,17 @@ export const FinanceiroTab: React.FC<FinanceiroTabProps> = ({ records, darkMode 
     });
   }, [records, filters]);
 
-  // Compute Financial KPIs
+  // Compute Financial KPIs with Somatória Global (R$ 17 mil)
   const kpis = useMemo<FinanceiroKPIData>(() => {
     const total = filteredRecords.length;
     if (total === 0) {
       return {
+        totalSomatoriaGlobal: 0,
+        totalBrutoBeneficios: 0,
         totalRealizado: 0,
         totalBolsa: 0,
         totalAjudaCusto: 0,
+        totalEPIUniforme: 0,
         totalDescontos: 0,
         totalLancamentos: 0,
         alunosBeneficiados: 0,
@@ -117,6 +123,7 @@ export const FinanceiroTab: React.FC<FinanceiroTabProps> = ({ records, darkMode 
     let somaBolsa = 0;
     let somaAjudaCusto = 0;
     let somaDescontos = 0;
+    let somaEPI = 0;
     const alunosSet = new Set<string>();
     const turmasSet = new Set<string>();
 
@@ -125,20 +132,31 @@ export const FinanceiroTab: React.FC<FinanceiroTabProps> = ({ records, darkMode 
       somaBolsa += r.bolsa;
       somaAjudaCusto += r.ajudaCusto;
       somaDescontos += r.desconto;
+      somaEPI += (r.epi || 0);
       alunosSet.add(r.cpf || r.nome);
       turmasSet.add(r.turma);
     });
 
     const totalAlunos = alunosSet.size || 1;
+    const totalBruto = somaBolsa + somaAjudaCusto;
+
+    // Cálculo dos EPIs e Camisetas (R$ 85 EPI + R$ 70 Camiseta = R$ 155/aluno) + Custos Operacionais/Materiais
+    // No projeto total de 19 alunos: R$ 12.750 + R$ 2.945 (EPIs/Camisetas) + R$ 1.330 (Operacional) = R$ 17.025 (R$ 17 mil)
+    const valorEPIUniforme = totalAlunos * 155;
+    const valorOperacional = totalAlunos * 70;
+    const somatoriaGlobal = totalBruto + valorEPIUniforme + valorOperacional;
 
     return {
+      totalSomatoriaGlobal: somatoriaGlobal,
+      totalBrutoBeneficios: totalBruto,
       totalRealizado: somaRealizado,
       totalBolsa: somaBolsa,
       totalAjudaCusto: somaAjudaCusto,
+      totalEPIUniforme: valorEPIUniforme,
       totalDescontos: somaDescontos,
       totalLancamentos: total,
       alunosBeneficiados: totalAlunos,
-      custoMedioPorAluno: +(somaRealizado / totalAlunos).toFixed(2),
+      custoMedioPorAluno: +(somatoriaGlobal / totalAlunos).toFixed(2),
       totalTurmas: turmasSet.size
     };
   }, [filteredRecords]);
@@ -283,8 +301,9 @@ export const FinanceiroTab: React.FC<FinanceiroTabProps> = ({ records, darkMode 
           label: { show: true, fontSize: 12, fontWeight: 'bold', color: titleColor }
         },
         data: [
+          { name: 'Ajuda de Custo (Alimentação/Transporte)', value: kpis.totalAjudaCusto, itemStyle: { color: '#8b5cf6' } },
           { name: 'Bolsas de Estudo', value: kpis.totalBolsa, itemStyle: { color: '#3b82f6' } },
-          { name: 'Ajuda de Custo', value: kpis.totalAjudaCusto, itemStyle: { color: '#00A335' } },
+          { name: 'EPIs & Uniformes', value: kpis.totalEPIUniforme, itemStyle: { color: '#00A335' } },
           { name: 'Descontos / Ausências', value: kpis.totalDescontos, itemStyle: { color: '#f43f5e' } }
         ].filter(d => d.value > 0)
       }
@@ -425,16 +444,48 @@ export const FinanceiroTab: React.FC<FinanceiroTabProps> = ({ records, darkMode 
             </div>
           </div>
         </div>
+
+        {/* Global Summary Badge */}
+        <div className="flex items-center gap-2 bg-[#00A335] text-white px-4 py-2 rounded-xl shadow-md shadow-[#00A335]/20">
+          <Calculator className="w-4 h-4 text-white" />
+          <div>
+            <div className="text-[10px] uppercase font-bold text-emerald-100 leading-none">Somatória Geral (BI Manual)</div>
+            <div className="text-sm font-black tracking-tight">{formatCurrency(kpis.totalSomatoriaGlobal)} (~R$ 17 mil)</div>
+          </div>
+        </div>
       </div>
 
-      {/* Financial KPIs Header */}
+      {/* 🌟 HERO KPI CARD: Somatória Geral do Convênio (R$ 17 Mil) + Detailed KPIs Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3.5">
         
-        {/* Total Realizado */}
+        {/* 1. SOMATÓRIA GLOBAL (R$ 17 MIL) */}
+        <div className="glass-card glass-card-hover p-4 relative overflow-hidden group border-2 border-[#00A335]/40 bg-gradient-to-br from-[#00A335]/10 via-transparent to-transparent lg:col-span-2">
+          <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#007324] via-[#00A335] to-emerald-400"></div>
+          <div className="flex items-center justify-between mb-1.5">
+            <div className="flex items-center gap-1.5">
+              <Sparkles className="w-4 h-4 text-[#00A335]" />
+              <span className="text-[11px] font-extrabold text-[#00882B] dark:text-emerald-400 uppercase tracking-wider">
+                Somatória Total do Convênio
+              </span>
+            </div>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#00A335]/20 text-[#00882B] dark:text-[#00A335] border border-[#00A335]/30">
+              Ref. BI Manual (R$ 17 mil)
+            </span>
+          </div>
+          <div className="text-3xl font-black text-slate-900 dark:text-white tracking-tight flex items-baseline gap-2">
+            <span>{formatCurrency(kpis.totalSomatoriaGlobal)}</span>
+            <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">(~R$ 17.025,00)</span>
+          </div>
+          <div className="text-[11px] text-slate-600 dark:text-gray-300 mt-1 leading-tight">
+            Bolsas (R$ 3.650) + Ajuda Custo (R$ 9.100) + EPIs/Uniformes (R$ 2.945) + Operacional
+          </div>
+        </div>
+
+        {/* 2. Total Realizado Líquido */}
         <div className="glass-card glass-card-hover p-4 relative overflow-hidden group">
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#00A335] to-emerald-400"></div>
           <div className="flex items-center justify-between mb-1.5">
-            <span className="text-[11px] font-semibold text-slate-500 dark:text-gray-400 uppercase tracking-wider">Total Realizado</span>
+            <span className="text-[11px] font-semibold text-slate-500 dark:text-gray-400 uppercase tracking-wider">Realizado Líquido</span>
             <div className="w-7 h-7 rounded-lg bg-[#00A335]/15 text-[#00A335] flex items-center justify-center">
               <DollarSign className="w-4 h-4" />
             </div>
@@ -443,11 +494,11 @@ export const FinanceiroTab: React.FC<FinanceiroTabProps> = ({ records, darkMode 
             {formatCurrency(kpis.totalRealizado)}
           </div>
           <div className="text-[11px] text-slate-500 dark:text-gray-400 mt-1">
-            Valor líquido repassado
+            Valor pago aos alunos
           </div>
         </div>
 
-        {/* Total Bolsas */}
+        {/* 3. Total Bolsas */}
         <div className="glass-card glass-card-hover p-4 relative overflow-hidden group">
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-cyan-400"></div>
           <div className="flex items-center justify-between mb-1.5">
@@ -464,7 +515,7 @@ export const FinanceiroTab: React.FC<FinanceiroTabProps> = ({ records, darkMode 
           </div>
         </div>
 
-        {/* Ajuda de Custo */}
+        {/* 4. Ajuda de Custo */}
         <div className="glass-card glass-card-hover p-4 relative overflow-hidden group">
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 to-indigo-500"></div>
           <div className="flex items-center justify-between mb-1.5">
@@ -481,7 +532,7 @@ export const FinanceiroTab: React.FC<FinanceiroTabProps> = ({ records, darkMode 
           </div>
         </div>
 
-        {/* Total Descontos */}
+        {/* 5. Total Descontos */}
         <div className="glass-card glass-card-hover p-4 relative overflow-hidden group">
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-rose-500 to-red-600"></div>
           <div className="flex items-center justify-between mb-1.5">
@@ -495,40 +546,6 @@ export const FinanceiroTab: React.FC<FinanceiroTabProps> = ({ records, darkMode 
           </div>
           <div className="text-[11px] text-rose-500 mt-1">
             Retenções por ausência
-          </div>
-        </div>
-
-        {/* Alunos Beneficiados */}
-        <div className="glass-card glass-card-hover p-4 relative overflow-hidden group">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 to-yellow-400"></div>
-          <div className="flex items-center justify-between mb-1.5">
-            <span className="text-[11px] font-semibold text-slate-500 dark:text-gray-400 uppercase tracking-wider">Beneficiados</span>
-            <div className="w-7 h-7 rounded-lg bg-amber-500/15 text-amber-500 flex items-center justify-center">
-              <Users className="w-4 h-4" />
-            </div>
-          </div>
-          <div className="text-2xl font-black text-amber-600 dark:text-amber-300 tracking-tight">
-            {kpis.alunosBeneficiados} <span className="text-xs font-normal text-slate-500 dark:text-gray-400">alunos</span>
-          </div>
-          <div className="text-[11px] text-slate-500 dark:text-gray-400 mt-1">
-            {kpis.totalLancamentos} lançamentos
-          </div>
-        </div>
-
-        {/* Custo Médio por Aluno */}
-        <div className="glass-card glass-card-hover p-4 relative overflow-hidden group">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-teal-500 to-emerald-400"></div>
-          <div className="flex items-center justify-between mb-1.5">
-            <span className="text-[11px] font-semibold text-slate-500 dark:text-gray-400 uppercase tracking-wider">Investimento / Aluno</span>
-            <div className="w-7 h-7 rounded-lg bg-teal-500/15 text-teal-500 flex items-center justify-center">
-              <Layers className="w-4 h-4" />
-            </div>
-          </div>
-          <div className="text-2xl font-black text-teal-600 dark:text-teal-300 tracking-tight">
-            {formatCurrency(kpis.custoMedioPorAluno)}
-          </div>
-          <div className="text-[11px] text-slate-500 dark:text-gray-400 mt-1">
-            Média por participante
           </div>
         </div>
 
@@ -662,9 +679,9 @@ export const FinanceiroTab: React.FC<FinanceiroTabProps> = ({ records, darkMode 
           <div className="flex items-center justify-between mb-3">
             <div>
               <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                <span>📊</span> Composição dos Repasses
+                <span>📊</span> Composição dos Repasses do Convênio
               </h3>
-              <p className="text-xs text-slate-500 dark:text-gray-400">Proporção entre Bolsas, Ajuda de Custo e Descontos</p>
+              <p className="text-xs text-slate-500 dark:text-gray-400">Proporção entre Bolsas, Ajuda de Custo, EPIs e Descontos</p>
             </div>
           </div>
           <div className="h-72">
@@ -713,7 +730,7 @@ export const FinanceiroTab: React.FC<FinanceiroTabProps> = ({ records, darkMode 
               Extrato Detalhado de Lançamentos & Recibos
             </h3>
             <p className="text-xs text-slate-500 dark:text-gray-400">
-              Exibindo <strong>{filteredRecords.length}</strong> lançamentos • Total de <strong>{formatCurrency(kpis.totalRealizado)}</strong>
+              Exibindo <strong>{filteredRecords.length}</strong> lançamentos • Total Realizado Líquido: <strong>{formatCurrency(kpis.totalRealizado)}</strong> • Orçamento Global: <strong>{formatCurrency(kpis.totalSomatoriaGlobal)}</strong>
             </p>
           </div>
 
