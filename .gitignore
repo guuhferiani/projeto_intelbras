@@ -1,0 +1,49 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Dependencies and Build
+node_modules
+dist
+dist-ssr
+*.local
+.env
+.env.*
+
+# ==========================================
+# DADOS SENSÍVEIS E PLANILHAS PRIVADAS (PROTEGIDOS)
+# ==========================================
+# Impede o versionamento de qualquer planilha com dados reais de alunos, notas e financeiro
+data/
+public/data/Dados SGSET/
+public/data/Relatório_Final/
+public/data/Financeiro/
+public/data/*.xlsx
+public/data/*.xlsm
+public/data/*.xls
+public/data/*.csv
+public/data/*.json
+*.xlsx
+*.xlsm
+*.xls
+*.csv
+*consolidado.json
+
+# Mantém apenas arquivos de instrução vazios se necessário
+!.gitkeep
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
