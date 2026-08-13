@@ -11,16 +11,10 @@ import { RelatorioFinalTab } from './components/relatorio/RelatorioFinalTab';
 import { FinanceiroTab } from './components/financeiro/FinanceiroTab';
 import { DataCenterTab } from './components/datacenter/DataCenterTab';
 import { SGSETUploadModal } from './components/sgset/SGSETUploadModal';
-import { 
-  FolderCheck, 
-  FileSpreadsheet,
-  Award,
-  DollarSign,
-  Database
-} from 'lucide-react';
+import { loadLiveFinancialFiles } from './utils/dataParser';
 
 export function App() {
-  const [darkMode, setDarkMode] = useState(false); // Default clean Intelbras light theme or dark
+  const [darkMode, setDarkMode] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [students, setStudents] = useState<SGSETStudent[]>([]);
   const [relatorioFinalRecords, setRelatorioFinalRecords] = useState<RelatorioFinalRecord[]>([]);
@@ -60,12 +54,9 @@ export function App() {
         setRelatorioFinalRecords(dataRelatorio);
       }
 
-      // 3. Financeiro Records
-      const resFinanceiro = await fetch('/data/financeiro_consolidado.json');
-      if (resFinanceiro.ok) {
-        const dataFinanceiro: FinanceiroRecord[] = await resFinanceiro.json();
-        setFinanceiroRecords(dataFinanceiro);
-      }
+      // 3. Financeiro Records - Direct Live Load from public/data/Financeiro
+      const liveFinanceData = await loadLiveFinancialFiles();
+      setFinanceiroRecords(liveFinanceData);
 
       setDataSourceName('AUTIPRET 2602NB & BOPMET 2604NB');
     } catch (err) {

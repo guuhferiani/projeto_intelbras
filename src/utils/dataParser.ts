@@ -1,6 +1,6 @@
 import * as XLSX from 'xlsx';
 import Papa from 'papaparse';
-import { SGSETStudent, SaleRecord } from '../types/bi';
+import { SGSETStudent, SaleRecord, FinanceiroRecord } from '../types/bi';
 
 function normalizeKey(str: string): string {
   return str
@@ -131,14 +131,21 @@ export function isSGSETData(row: Record<string, any>): boolean {
   );
 }
 
-// Parse multiple files
-export async function parseFileToData(file: File): Promise<{ type: 'sgset' | 'sales', data: any[] }> {
-  const isExcel = file.name.endsWith('.xlsx') || file.name.endsWith('.xls');
+// Parse uploaded file
+export async function parseFileToData(file: File): Promise<{ type: 'sgset' | 'sales' | 'financeiro', data: any[] }> {
+  const isExcel = file.name.endsWith('.xlsx') || file.name.endsWith('.xls') || file.name.endsWith('.xlsm');
   let rawJson: Record<string, any>[] = [];
 
   if (isExcel) {
     const buffer = await file.arrayBuffer();
     const workbook = XLSX.read(buffer, { type: 'array', cellDates: true });
+    
+    // Check if it has BD_Realizado (Financial)
+    if (workbook.Sheets['BD_Realizado']) {
+      const records = parseFinancialWorkbook(workbook, file.name);
+      return { type: 'financeiro', data: records };
+    }
+
     const firstSheetName = workbook.SheetNames[0];
     const worksheet = workbook.Sheets[firstSheetName];
     rawJson = XLSX.utils.sheet_to_json<Record<string, any>>(worksheet);
@@ -156,22 +163,146 @@ export async function parseFileToData(file: File): Promise<{ type: 'sgset' | 'sa
     return { type: 'sgset', data: [] };
   }
 
-  // Detect type
   const isSGSET = isSGSETData(rawJson[0]);
   if (isSGSET) {
     const students = rawJson.map((r, i) => normalizeSGSETRow(r, i, file.name));
     return { type: 'sgset', data: students };
   } else {
-    // Normal sales
     return { type: 'sales', data: rawJson };
   }
+}
+
+// Parse Financial Workbook directly (.xlsm or .xlsx)
+export function parseFinancialWorkbook(workbook: XLSX.WorkBook, fileName: string): FinanceiroRecord[] {
+  const sheetName = workbook.Sheets['BD_Realizado'] ? 'BD_Realizado' : workbook.SheetNames[0];
+  const sheet = workbook.Sheets[sheetName];
+  if (!sheet) return [];
+
+  const rawRows = XLSX.utils.sheet_to_json<Record<string, any>>(sheet);
+  const records: FinanceiroRecord[] = [];
+
+  rawRows.forEach((row, index) => {
+    const normMap: Record<string, any> = {};
+    for (const key of Object.keys(row)) {
+      normMap[normalizeKey(key)] = row[key];
+    }
+
+    const findVal = (...keys: string[]): any => {
+      for (const k of keys) {
+        const nk = normalizeKey(k);
+        if (normMap[nk] !== undefined && normMap[nk] !== null && normMap[nk] !== '') {
+          return normMap[nk];
+        }
+      }
+      return '';
+    };
+
+    const parseMoney = (val: any): number => {
+      if (typeof val === 'number') return isNaN(val) ? 0 : val;
+      if (!val) return 0;
+      const clean = String(val).replace('R$', '').replace(/\s/g, '').replace(/\./g, '').replace(',', '.');
+      const num = parseFloat(clean);
+      return isNaN(num) ? 0 : num;
+    };
+
+    const etapa = Number(findVal('Etapa') || 1);
+    const nivel = String(findVal('Nível', 'Nivel') || 'Aperfeiçoamento');
+    const dataEmissaoRaw = findVal('Data - Emissão do Recibo', 'Data Emissão', 'Data');
+    const dataEmissao = typeof dataEmissaoRaw === 'number' ? excelDateToJS(dataEmissaoRaw) : String(dataEmissaoRaw);
+
+    const cpf = String(findVal('CPF') || '');
+    const nome = String(findVal('Nome', 'Nome do Aluno') || '').trim();
+    if (!nome && !cpf) return; // Skip blank lines
+
+    const curso = String(findVal('Curso', 'Nome do Curso') || 'Curso Geral').replace(/^INTELBRAS\s*-\s*/i, '');
+    const turma = String(findVal('Turma') || fileName.replace(/\.[^/.]+$/, ''));
+
+    const dataProgRaw = findVal('Data Programada', 'Data Programada Real');
+    const dataProgramada = typeof dataProgRaw === 'number' ? excelDateToJS(dataProgRaw) : String(dataProgRaw);
+
+    const custoOperacional = parseMoney(findVal('Custo Operacional (R$)', 'Custo Operacional'));
+    const epi = parseMoney(findVal('EPI (R$)', 'EPI'));
+    const camiseta = parseMoney(findVal('Camiseta (R$)', 'Camiseta'));
+    const valorConducao = parseMoney(findVal('Valor  Total Condução (R$)', 'Valor Total Condução (R$)', 'Condução'));
+    const bolsa = parseMoney(findVal('Bolsa (R$)', 'Bolsa'));
+    const ajudaCusto = parseMoney(findVal('Valor (ajuda de Custo)', 'Ajuda de Custo'));
+    const desconto = parseMoney(findVal('Desconto (R$)', 'Desconto'));
+    const notaDesconto = String(findVal('Nota Ref. Desconto', 'Motivo Desconto') || '');
+    
+    let realizado = parseMoney(findVal('Realizado (R$)', 'Realizado'));
+    if (realizado === 0 && (bolsa > 0 || ajudaCusto > 0)) {
+      realizado = Math.max(0, (bolsa + ajudaCusto + valorConducao) - desconto);
+    }
+
+    records.push({
+      id: `${turma}_${cpf}_${index}`,
+      etapa,
+      nivel,
+      dataEmissao,
+      dataProgramada,
+      cpf,
+      nome,
+      curso,
+      turma,
+      custoOperacional,
+      epi,
+      camiseta,
+      valorConducao,
+      bolsa,
+      ajudaCusto,
+      desconto,
+      notaDesconto: notaDesconto && notaDesconto !== '0' ? notaDesconto : (desconto > 0 ? 'Desconto por Ausência' : '-'),
+      realizado,
+      arquivoOrigem: fileName
+    });
+  });
+
+  return records;
+}
+
+// Fetch live .xlsm and .xlsx directly from public/data/Financeiro
+export async function loadLiveFinancialFiles(): Promise<FinanceiroRecord[]> {
+  const filePaths = [
+    { url: '/data/Financeiro/AUTIPRET 2602NB.xlsm', name: 'AUTIPRET 2602NB.xlsm' },
+    { url: '/data/Financeiro/BOPMET 2604NB.xlsm', name: 'BOPMET 2604NB.xlsm' }
+  ];
+
+  let combined: FinanceiroRecord[] = [];
+
+  for (const item of filePaths) {
+    try {
+      const response = await fetch(item.url);
+      if (response.ok) {
+        const buffer = await response.arrayBuffer();
+        const workbook = XLSX.read(buffer, { type: 'array' });
+        const records = parseFinancialWorkbook(workbook, item.name);
+        combined = [...combined, ...records];
+      }
+    } catch (err) {
+      console.warn(`Aviso ao carregar ${item.name}:`, err);
+    }
+  }
+
+  // Fallback to JSON if binary fetch was blocked or empty
+  if (combined.length === 0) {
+    try {
+      const res = await fetch('/data/financeiro_consolidado.json');
+      if (res.ok) {
+        combined = await res.json();
+      }
+    } catch (e) {
+      console.error('Erro no fallback financeiro:', e);
+    }
+  }
+
+  return combined;
 }
 
 export function formatCurrency(value: number): string {
   return new Intl.NumberFormat('pt-BR', {
     style: 'currency',
     currency: 'BRL',
-    maximumFractionDigits: 0
+    maximumFractionDigits: 2
   }).format(value);
 }
 
