@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { UploadCloud, FileSpreadsheet, X, CheckCircle2, AlertCircle } from 'lucide-react';
 import { parseFileToData } from '../../utils/dataParser';
 import { SGSETStudent, RelatorioFinalRecord, FinanceiroRecord } from '../../types/bi';
+import { saveDataToNeon } from '../../services/neonService';
 
 export interface LoadedDataPayload {
   students?: SGSETStudent[];
@@ -55,28 +56,34 @@ export const SGSETUploadModal: React.FC<SGSETUploadModalProps> = ({
       const totalItems = combinedStudents.length + combinedRelatorio.length + combinedFinanceiro.length;
 
       if (totalItems > 0) {
-        onDataLoaded({
+        const payload: LoadedDataPayload = {
           students: combinedStudents.length > 0 ? combinedStudents : undefined,
           relatorio: combinedRelatorio.length > 0 ? combinedRelatorio : undefined,
           financeiro: combinedFinanceiro.length > 0 ? combinedFinanceiro : undefined,
           sourceLabel: fileNames.join(', ')
-        });
+        };
+
+        // 1. Save permanently to Neon Cloud Database
+        await saveDataToNeon(payload);
+
+        // 2. Update local state
+        onDataLoaded(payload);
 
         const details = [
-          combinedStudents.length > 0 ? `${combinedStudents.length} alunos SGSET` : '',
-          combinedRelatorio.length > 0 ? `${combinedRelatorio.length} notas pedagógicas` : '',
-          combinedFinanceiro.length > 0 ? `${combinedFinanceiro.length} lançamentos financeiros` : ''
+          combinedStudents.length > 0 ? `${combinedStudents.length} alunos` : '',
+          combinedRelatorio.length > 0 ? `${combinedRelatorio.length} notas` : '',
+          combinedFinanceiro.length > 0 ? `${combinedFinanceiro.length} lançamentos` : ''
         ].filter(Boolean).join(', ');
 
         setStatusMsg({
           type: 'success',
-          text: `Sucesso! Adicionados aos dados existentes: ${details}.`
+          text: `Sucesso! Salvo no banco Neon e sincronizado: ${details}.`
         });
 
         setTimeout(() => {
           onClose();
           setStatusMsg(null);
-        }, 1500);
+        }, 1800);
       } else {
         setStatusMsg({
           type: 'error',
