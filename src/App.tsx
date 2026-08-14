@@ -12,6 +12,12 @@ import { FinanceiroTab } from './components/financeiro/FinanceiroTab';
 import { DataCenterTab } from './components/datacenter/DataCenterTab';
 import { SGSETUploadModal } from './components/sgset/SGSETUploadModal';
 import { loadLiveFinancialFiles } from './utils/dataParser';
+import { 
+  fetchAllDataFromApi,
+  fetchSGSETStudentsFromNeon, 
+  fetchRelatorioFinalFromNeon, 
+  fetchFinanceiroFromNeon 
+} from './services/neonService';
 
 export function App() {
   const [darkMode, setDarkMode] = useState(false);
@@ -37,34 +43,68 @@ export function App() {
     busca: ''
   });
 
-  // Load All Real Data on Mount
+  // Load All Real Data on Mount (Vercel API / Neon DB First, Fallback to Local JSON)
   const loadDefaultData = async () => {
     setLoading(true);
+    let neonSuccess = false;
     try {
-      // 1. SGSET Students
-      const resStudents = await fetch('/data/sgset_consolidado.json');
-      if (resStudents.ok) {
-        const dataStudents: SGSETStudent[] = await resStudents.json();
-        setStudents(dataStudents);
+      // 1. Try Vercel Serverless Backend API (/api/data)
+      const apiData = await fetchAllDataFromApi();
+      if (apiData && (apiData.students.length > 0 || apiData.relatorio.length > 0 || apiData.financeiro.length > 0)) {
+        if (apiData.students.length > 0) setStudents(apiData.students);
+        if (apiData.relatorio.length > 0) setRelatorioFinalRecords(apiData.relatorio);
+        if (apiData.financeiro.length > 0) setFinanceiroRecords(apiData.financeiro);
+        setDataSourceName('Neon PostgreSQL (bi-intelbras)');
+        neonSuccess = true;
       }
 
-      // 2. Relatório Final Records
-      const resRelatorio = await fetch('/data/relatorio_final_consolidado.json');
-      if (resRelatorio.ok) {
-        const dataRelatorio: RelatorioFinalRecord[] = await resRelatorio.json();
-        setRelatorioFinalRecords(dataRelatorio);
+      // 2. If API not present (e.g. direct client dev), try direct Neon query
+      if (!neonSuccess) {
+        const [neonStudents, neonRelatorio, neonFinanceiro] = await Promise.all([
+          fetchSGSETStudentsFromNeon().catch(() => []),
+          fetchRelatorioFinalFromNeon().catch(() => []),
+          fetchFinanceiroFromNeon().catch(() => [])
+        ]);
+
+        if (neonStudents.length > 0 || neonRelatorio.length > 0 || neonFinanceiro.length > 0) {
+          if (neonStudents.length > 0) setStudents(neonStudents);
+          if (neonRelatorio.length > 0) setRelatorioFinalRecords(neonRelatorio);
+          if (neonFinanceiro.length > 0) setFinanceiroRecords(neonFinanceiro);
+          setDataSourceName('Neon PostgreSQL (bi-intelbras)');
+          neonSuccess = true;
+        }
       }
-
-      // 3. Financeiro Records - Direct Live Load from public/data/Financeiro
-      const liveFinanceData = await loadLiveFinancialFiles();
-      setFinanceiroRecords(liveFinanceData);
-
-      setDataSourceName('AUTIPRET 2602NB & BOPMET 2604NB');
     } catch (err) {
-      console.error('Erro ao carregar dados iniciais:', err);
-    } finally {
-      setLoading(false);
+      console.warn('Neon connection failed, falling back to local files:', err);
     }
+
+    if (!neonSuccess) {
+      try {
+        // 1. SGSET Students Fallback
+        const resStudents = await fetch('/data/sgset_consolidado.json');
+        if (resStudents.ok) {
+          const dataStudents: SGSETStudent[] = await resStudents.json();
+          setStudents(dataStudents);
+        }
+
+        // 2. Relatório Final Records Fallback
+        const resRelatorio = await fetch('/data/relatorio_final_consolidado.json');
+        if (resRelatorio.ok) {
+          const dataRelatorio: RelatorioFinalRecord[] = await resRelatorio.json();
+          setRelatorioFinalRecords(dataRelatorio);
+        }
+
+        // 3. Financeiro Records - Direct Live Load from public/data/Financeiro
+        const liveFinanceData = await loadLiveFinancialFiles();
+        setFinanceiroRecords(liveFinanceData);
+
+        setDataSourceName('AUTIPRET 2602NB & BOPMET 2604NB (Local)');
+      } catch (err) {
+        console.error('Erro ao carregar dados locais:', err);
+      }
+    }
+
+    setLoading(false);
   };
 
   useEffect(() => {

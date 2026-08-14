@@ -6,14 +6,17 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "sync-neon": "node scripts/sync_to_neon.js",
     "lint": "oxlint",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.1.0",
     "@types/papaparse": "^5.5.2",
     "canvg": "^4.0.3",
     "clsx": "^2.1.1",
     "core-js": "^3.50.0",
+    "dotenv": "^17.4.2",
     "echarts": "^5.6.0",
     "echarts-for-react": "^3.0.6",
     "jspdf": "^4.2.1",
