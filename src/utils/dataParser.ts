@@ -1,8 +1,8 @@
 import * as XLSX from 'xlsx';
 import Papa from 'papaparse';
-import { SGSETStudent, SaleRecord, FinanceiroRecord } from '../types/bi';
+import { SGSETStudent, RelatorioFinalRecord, FinanceiroRecord } from '../types/bi';
 
-function normalizeKey(str: string): string {
+export function normalizeKey(str: string): string {
   return str
     .toLowerCase()
     .normalize('NFD')
@@ -10,7 +10,7 @@ function normalizeKey(str: string): string {
     .replace(/[^a-z0-9]/g, '');
 }
 
-function excelDateToJS(serial: any): string {
+export function excelDateToJS(serial: any): string {
   if (!serial) return '';
   if (typeof serial === 'number') {
     const utc_days = Math.floor(serial - 25569);
@@ -21,7 +21,7 @@ function excelDateToJS(serial: any): string {
   return String(serial);
 }
 
-function calculateAge(birthDateStr: string): number {
+export function calculateAge(birthDateStr: string): number {
   if (!birthDateStr) return 25;
   const parts = String(birthDateStr).split(/[/.-]/);
   if (parts.length === 3) {
@@ -118,7 +118,67 @@ export function normalizeSGSETRow(rawRow: Record<string, any>, index: number, fi
   };
 }
 
-// Check if a row represents SGSET / Student Data or Sales Data
+// Convert any row to RelatorioFinalRecord
+export function normalizeRelatorioRow(rawRow: Record<string, any>, index: number, fileName: string = 'Relatório Final'): RelatorioFinalRecord {
+  const normMap: Record<string, any> = {};
+  for (const key of Object.keys(rawRow)) {
+    normMap[normalizeKey(key)] = rawRow[key];
+  }
+
+  const findVal = (...keys: string[]): any => {
+    for (const k of keys) {
+      const nk = normalizeKey(k);
+      if (normMap[nk] !== undefined && normMap[nk] !== null && normMap[nk] !== '') {
+        return normMap[nk];
+      }
+    }
+    return '';
+  };
+
+  const matricula = String(findVal('Nº de Matrícula', 'Matrícula', 'Matricula', 'Nº Matrícula', 'ID') || `MAT-${261000 + index}`);
+  const cpf = String(findVal('CPF', 'Documento') || '');
+  const nome = String(findVal('Nome', 'Nome do Aluno', 'Aluno') || `Aluno ${index + 1}`).trim();
+  const curso = String(findVal('Curso', 'Nome do Curso') || 'Curso Geral');
+  const escola = String(findVal('Escola', 'Unidade') || '106 - MARIANO FERRAZ');
+  const cargaHoraria = Number(findVal('Carga Horária', 'Carga Horaria', 'CH') || 80);
+  const turma = String(findVal('Turma', 'Código Turma') || fileName.replace(/\.[^/.]+$/, ''));
+  const turno = String(findVal('Turno') || 'Noite');
+
+  const rawInicio = findVal('Data de Início Realizada', 'Data de Início', 'Data Inicio');
+  const rawFim = findVal('Data de Fim Realizada', 'Data de Fim', 'Data Fim');
+  const dataInicio = excelDateToJS(rawInicio);
+  const dataFim = excelDateToJS(rawFim);
+
+  const situacao = String(findVal('Situação', 'Situacao', 'Status') || 'CONCLUÍDA');
+  const notaFinal = Number(findVal('Nota Final', 'Nota', 'Media Final', 'Média Final') || 0);
+  const docente = String(findVal('Docente', 'Docentes', 'Professor', 'Instrutor') || 'Não Informado');
+  const faltas = Number(findVal('Faltas', 'Total Faltas') || 0);
+  const frequencia = Number(findVal('Frequência', 'Frequencia', 'Freq') || 100);
+  const resultadoFinal = String(findVal('Resultado Final', 'Resultado', 'Status Final') || 'Promovido');
+
+  return {
+    id: `${matricula}_${turma}`,
+    matricula,
+    cpf,
+    nome,
+    curso,
+    escola,
+    cargaHoraria,
+    turma,
+    turno,
+    dataInicio,
+    dataFim,
+    situacao,
+    notaFinal,
+    docente,
+    faltas,
+    frequencia,
+    resultadoFinal,
+    arquivoOrigem: fileName
+  };
+}
+
+// Check if a row represents SGSET / Student Data
 export function isSGSETData(row: Record<string, any>): boolean {
   const normKeys = Object.keys(row).map(k => normalizeKey(k));
   return normKeys.some(k => 
@@ -131,8 +191,11 @@ export function isSGSETData(row: Record<string, any>): boolean {
   );
 }
 
-// Parse uploaded file
-export async function parseFileToData(file: File): Promise<{ type: 'sgset' | 'sales' | 'financeiro', data: any[] }> {
+// Parse uploaded file with smart format detection
+export async function parseFileToData(file: File): Promise<{
+  type: 'sgset' | 'relatorio_final' | 'financeiro' | 'sales';
+  data: any[];
+}> {
   const isExcel = file.name.endsWith('.xlsx') || file.name.endsWith('.xls') || file.name.endsWith('.xlsm');
   let rawJson: Record<string, any>[] = [];
 
@@ -163,23 +226,53 @@ export async function parseFileToData(file: File): Promise<{ type: 'sgset' | 'sa
     return { type: 'sgset', data: [] };
   }
 
-  const isSGSET = isSGSETData(rawJson[0]);
+  const sample = rawJson[0];
+  const normKeys = Object.keys(sample).map(k => normalizeKey(k));
+
+  // 1. Check if Relatório Final (has nota, frequencia, docente, resultado)
+  const isRelatorio = normKeys.some(k => 
+    k.includes('notafinal') || 
+    k.includes('frequencia') || 
+    k.includes('resultadofinal') || 
+    k.includes('docente')
+  );
+  if (isRelatorio) {
+    const records = rawJson.map((r, i) => normalizeRelatorioRow(r, i, file.name));
+    return { type: 'relatorio_final', data: records };
+  }
+
+  // 2. Check if Financial sheet
+  const isFinancial = normKeys.some(k => 
+    k.includes('bolsa') || 
+    k.includes('ajudacusto') || 
+    k.includes('custooperacional') || 
+    k.includes('realizado')
+  );
+  if (isFinancial) {
+    const records = parseFinancialRawRows(rawJson, file.name);
+    return { type: 'financeiro', data: records };
+  }
+
+  // 3. Check if SGSET
+  const isSGSET = isSGSETData(sample);
   if (isSGSET) {
     const students = rawJson.map((r, i) => normalizeSGSETRow(r, i, file.name));
     return { type: 'sgset', data: students };
-  } else {
-    return { type: 'sales', data: rawJson };
   }
+
+  return { type: 'sales', data: rawJson };
 }
 
-// Parse Financial Workbook directly (.xlsm or .xlsx)
-export function parseFinancialWorkbook(workbook: XLSX.WorkBook, fileName: string): FinanceiroRecord[] {
-  const sheetName = workbook.Sheets['BD_Realizado'] ? 'BD_Realizado' : workbook.SheetNames[0];
-  const sheet = workbook.Sheets[sheetName];
-  if (!sheet) return [];
-
-  const rawRows = XLSX.utils.sheet_to_json<Record<string, any>>(sheet);
+function parseFinancialRawRows(rawRows: Record<string, any>[], fileName: string): FinanceiroRecord[] {
   const records: FinanceiroRecord[] = [];
+
+  const parseMoney = (val: any): number => {
+    if (typeof val === 'number') return isNaN(val) ? 0 : val;
+    if (!val) return 0;
+    const clean = String(val).replace('R$', '').replace(/\s/g, '').replace(/\./g, '').replace(',', '.');
+    const num = parseFloat(clean);
+    return isNaN(num) ? 0 : num;
+  };
 
   rawRows.forEach((row, index) => {
     const normMap: Record<string, any> = {};
@@ -197,14 +290,6 @@ export function parseFinancialWorkbook(workbook: XLSX.WorkBook, fileName: string
       return '';
     };
 
-    const parseMoney = (val: any): number => {
-      if (typeof val === 'number') return isNaN(val) ? 0 : val;
-      if (!val) return 0;
-      const clean = String(val).replace('R$', '').replace(/\s/g, '').replace(/\./g, '').replace(',', '.');
-      const num = parseFloat(clean);
-      return isNaN(num) ? 0 : num;
-    };
-
     const etapa = Number(findVal('Etapa') || 1);
     const nivel = String(findVal('Nível', 'Nivel') || 'Aperfeiçoamento');
     const dataEmissaoRaw = findVal('Data - Emissão do Recibo', 'Data Emissão', 'Data');
@@ -212,7 +297,7 @@ export function parseFinancialWorkbook(workbook: XLSX.WorkBook, fileName: string
 
     const cpf = String(findVal('CPF') || '');
     const nome = String(findVal('Nome', 'Nome do Aluno') || '').trim();
-    if (!nome && !cpf) return; // Skip blank lines
+    if (!nome && !cpf) return;
 
     const curso = String(findVal('Curso', 'Nome do Curso') || 'Curso Geral').replace(/^INTELBRAS\s*-\s*/i, '');
     const turma = String(findVal('Turma') || fileName.replace(/\.[^/.]+$/, ''));
@@ -258,6 +343,16 @@ export function parseFinancialWorkbook(workbook: XLSX.WorkBook, fileName: string
   });
 
   return records;
+}
+
+// Parse Financial Workbook directly (.xlsm or .xlsx)
+export function parseFinancialWorkbook(workbook: XLSX.WorkBook, fileName: string): FinanceiroRecord[] {
+  const sheetName = workbook.Sheets['BD_Realizado'] ? 'BD_Realizado' : workbook.SheetNames[0];
+  const sheet = workbook.Sheets[sheetName];
+  if (!sheet) return [];
+
+  const rawRows = XLSX.utils.sheet_to_json<Record<string, any>>(sheet);
+  return parseFinancialRawRows(rawRows, fileName);
 }
 
 // Fetch live .xlsm and .xlsx directly from public/data/Financeiro

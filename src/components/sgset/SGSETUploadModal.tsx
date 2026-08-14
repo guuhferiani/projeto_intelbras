@@ -1,12 +1,19 @@
 import React, { useState } from 'react';
 import { UploadCloud, FileSpreadsheet, X, CheckCircle2, AlertCircle } from 'lucide-react';
 import { parseFileToData } from '../../utils/dataParser';
-import { SGSETStudent } from '../../types/bi';
+import { SGSETStudent, RelatorioFinalRecord, FinanceiroRecord } from '../../types/bi';
+
+export interface LoadedDataPayload {
+  students?: SGSETStudent[];
+  relatorio?: RelatorioFinalRecord[];
+  financeiro?: FinanceiroRecord[];
+  sourceLabel: string;
+}
 
 interface SGSETUploadModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onDataLoaded: (students: SGSETStudent[], fileName: string) => void;
+  onDataLoaded: (payload: LoadedDataPayload) => void;
 }
 
 export const SGSETUploadModal: React.FC<SGSETUploadModalProps> = ({
@@ -27,31 +34,53 @@ export const SGSETUploadModal: React.FC<SGSETUploadModalProps> = ({
 
     try {
       let combinedStudents: SGSETStudent[] = [];
+      let combinedRelatorio: RelatorioFinalRecord[] = [];
+      let combinedFinanceiro: FinanceiroRecord[] = [];
       const fileNames: string[] = [];
 
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
         fileNames.push(file.name);
         const res = await parseFileToData(file);
+
         if (res.type === 'sgset') {
           combinedStudents = [...combinedStudents, ...(res.data as SGSETStudent[])];
+        } else if (res.type === 'relatorio_final') {
+          combinedRelatorio = [...combinedRelatorio, ...(res.data as RelatorioFinalRecord[])];
+        } else if (res.type === 'financeiro') {
+          combinedFinanceiro = [...combinedFinanceiro, ...(res.data as FinanceiroRecord[])];
         }
       }
 
-      if (combinedStudents.length > 0) {
-        onDataLoaded(combinedStudents, fileNames.join(', '));
+      const totalItems = combinedStudents.length + combinedRelatorio.length + combinedFinanceiro.length;
+
+      if (totalItems > 0) {
+        onDataLoaded({
+          students: combinedStudents.length > 0 ? combinedStudents : undefined,
+          relatorio: combinedRelatorio.length > 0 ? combinedRelatorio : undefined,
+          financeiro: combinedFinanceiro.length > 0 ? combinedFinanceiro : undefined,
+          sourceLabel: fileNames.join(', ')
+        });
+
+        const details = [
+          combinedStudents.length > 0 ? `${combinedStudents.length} alunos SGSET` : '',
+          combinedRelatorio.length > 0 ? `${combinedRelatorio.length} notas pedagógicas` : '',
+          combinedFinanceiro.length > 0 ? `${combinedFinanceiro.length} lançamentos financeiros` : ''
+        ].filter(Boolean).join(', ');
+
         setStatusMsg({
           type: 'success',
-          text: `Sucesso! Carregados ${combinedStudents.length} alunos de ${files.length} arquivo(s).`
+          text: `Sucesso! Adicionados aos dados existentes: ${details}.`
         });
+
         setTimeout(() => {
           onClose();
           setStatusMsg(null);
-        }, 1200);
+        }, 1500);
       } else {
         setStatusMsg({
           type: 'error',
-          text: 'Nenhum dado de aluno/SGSET reconhecido nas planilhas selecionadas.'
+          text: 'Nenhum dado reconhecido (SGSET, Relatório Final ou Financeiro) nas planilhas selecionadas.'
         });
       }
     } catch (err: any) {
@@ -80,8 +109,8 @@ export const SGSETUploadModal: React.FC<SGSETUploadModalProps> = ({
             <UploadCloud className="w-6 h-6" />
           </div>
           <div>
-            <h2 className="text-base font-bold text-[var(--text-primary)]">Importar Planilhas SGSET</h2>
-            <p className="text-xs text-[var(--text-secondary)]">Adicione novos arquivos .xlsx ou .csv de turmas</p>
+            <h2 className="text-base font-bold text-[var(--text-primary)]">Importar Novas Planilhas</h2>
+            <p className="text-xs text-[var(--text-secondary)]">Os dados serão acrescentados às turmas existentes sem apagar nada</p>
           </div>
         </div>
 
@@ -105,27 +134,27 @@ export const SGSETUploadModal: React.FC<SGSETUploadModalProps> = ({
             id="file-upload-input"
             type="file"
             multiple
-            accept=".xlsx,.xls,.csv"
+            accept=".xlsx,.xls,.xlsm,.csv"
             onChange={(e) => handleFiles(e.target.files)}
             className="hidden"
           />
 
           <FileSpreadsheet className="w-10 h-10 text-[var(--intelbras-green)] mx-auto mb-3 animate-pulse" />
           <p className="text-sm font-semibold text-[var(--text-primary)] mb-1">
-            Arraste e solte planilhas Excel aqui
+            Arraste e solte suas planilhas aqui
           </p>
           <p className="text-xs text-[var(--text-secondary)] mb-4">
-            ou clique para navegar nos seus arquivos (.xlsx, .xls, .csv)
+            Suporta SGSET, Relatório Final ou Financeiro (.xlsx, .xlsm, .csv)
           </p>
           
-          <span className="inline-block px-3 py-1.5 rounded-lg bg-[var(--intelbras-green)] text-white text-xs font-semibold shadow-md shadow-[var(--intelbras-green)]/30">
+          <span className="inline-block px-3.5 py-2 rounded-lg bg-[var(--intelbras-green)] text-white text-xs font-semibold shadow-md shadow-[var(--intelbras-green)]/30">
             Selecionar Arquivos
           </span>
         </div>
 
         {loading && (
           <div className="mt-4 text-center text-xs text-[var(--intelbras-green)] font-semibold animate-pulse">
-            Processando planilhas e calculando métricas...
+            Processando e mesclando dados com as bases ativas...
           </div>
         )}
 
@@ -141,10 +170,7 @@ export const SGSETUploadModal: React.FC<SGSETUploadModalProps> = ({
         )}
 
         <div className="mt-4 pt-3 border-t border-[var(--border-highlight)] text-[11px] text-[var(--text-secondary)]">
-          💡 <strong>Dica:</strong> Você também pode salvar os arquivos permanentemente na pasta:
-          <div className="font-mono text-[10px] text-[var(--text-secondary)] mt-1 bg-[var(--bg-tertiary)] p-1.5 rounded border border-[var(--border-color)] truncate">
-            ...\public\data\Dados SGSET\
-          </div>
+          ✨ <strong>Modo Incremental Ativo:</strong> Novos alunos e turmas serão somados aos dados já carregados.
         </div>
 
       </div>

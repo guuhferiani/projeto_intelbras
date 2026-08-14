@@ -10,7 +10,7 @@ import { SGSETStudentsTableTab } from './components/sgset/SGSETStudentsTableTab'
 import { RelatorioFinalTab } from './components/relatorio/RelatorioFinalTab';
 import { FinanceiroTab } from './components/financeiro/FinanceiroTab';
 import { DataCenterTab } from './components/datacenter/DataCenterTab';
-import { SGSETUploadModal } from './components/sgset/SGSETUploadModal';
+import { SGSETUploadModal, type LoadedDataPayload } from './components/sgset/SGSETUploadModal';
 import { loadLiveFinancialFiles } from './utils/dataParser';
 import { 
   fetchAllDataFromApi,
@@ -206,9 +206,38 @@ export function App() {
     });
   };
 
-  const handleDataLoaded = (newStudents: SGSETStudent[], sourceLabel: string) => {
-    setStudents(newStudents);
-    setDataSourceName(sourceLabel);
+  const handleDataLoaded = (payload: LoadedDataPayload) => {
+    if (payload.students && payload.students.length > 0) {
+      setStudents(prev => {
+        const map = new Map<string, SGSETStudent>();
+        prev.forEach(s => map.set(s.matricula || s.id, s));
+        payload.students!.forEach(s => map.set(s.matricula || s.id, s));
+        return Array.from(map.values());
+      });
+    }
+
+    if (payload.relatorio && payload.relatorio.length > 0) {
+      setRelatorioFinalRecords(prev => {
+        const map = new Map<string, RelatorioFinalRecord>();
+        prev.forEach(r => map.set(r.id || `${r.matricula}_${r.turma}`, r));
+        payload.relatorio!.forEach(r => map.set(r.id || `${r.matricula}_${r.turma}`, r));
+        return Array.from(map.values());
+      });
+    }
+
+    if (payload.financeiro && payload.financeiro.length > 0) {
+      setFinanceiroRecords(prev => {
+        const map = new Map<string, FinanceiroRecord>();
+        prev.forEach(f => map.set(f.id, f));
+        payload.financeiro!.forEach(f => map.set(f.id, f));
+        return Array.from(map.values());
+      });
+    }
+
+    setDataSourceName(prev => {
+      if (prev.includes(payload.sourceLabel)) return prev;
+      return `${prev} + ${payload.sourceLabel}`;
+    });
   };
 
   const currentRecordCount = activeTab === 'relatorio_final' 
